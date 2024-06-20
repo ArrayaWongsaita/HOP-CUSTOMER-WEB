@@ -10,7 +10,7 @@ export default function Input({ placeholder, type = 'text', error, onChange, val
 
   return (
     <div className={`relative   flex flex-col `}>
-        <small className={` text-gray-500 transition-transform top-8 left-2.5 z-20  rounded-sm bg-white px-1 absolute  ${value ? 'move-to-top' : ''}`}>{!value || placeholder}</small>
+        <small className={` text-gray-500 transition-transform top-8 left-2.5 z-20  rounded-lg bg-white px-1 absolute  ${value ? 'move-to-top' : ''}`}>{!value || placeholder}</small>
       <input
         type={type}
         name={name}
