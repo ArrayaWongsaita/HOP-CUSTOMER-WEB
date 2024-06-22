@@ -15,6 +15,7 @@ export default {
         torchRed: "#ff004d",
         gainsboro: "#dbdbdb",
         corn: "#faef5d",
+        kashmirBlue: "#516293",
       },
     },
   },

@@ -6,6 +6,7 @@ import Textarea from "./components/Textarea";
 
 import CommonButton from "./components/CommonButton";
 import CircleButton from "./components/CircleButton";
+import Grid from "./components/Grid";
 
 function App() {
   const [input, setInput] = useState("");
@@ -19,7 +20,7 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center h-screen bg-corn gap-14">
+    <div className="flex flex-col justify-center items-center h-screen bg-torchRed gap-14">
       {/* <h1>hop customer web</h1>
       <Input
         name={"firstName"}
@@ -40,7 +41,7 @@ function App() {
           Input image
         </div>
       </InputImage> */}
-      <div className=" gap-3 flex">
+      {/* <div className=" gap-3 flex">
         <CommonButton width="regist" height="regist" fontSize="regist">
           Register
         </CommonButton>
@@ -105,22 +106,8 @@ function App() {
         >
           &#129104;
         </CircleButton>
-      </div>
-
-      {/* <Button
-        bg="luckyPoint"
-        text="white"
-        borderColor="torchRed"
-        borderRadius="circle"
-        width="circle"
-        height="circle"
-        fontSize="circle"
-        borderSize="circle"
-        outlineColor="circle"
-        outlineWidth="circle"
-      >
-        confirm
-      </Button> */}
+      </div> */}
+      <Grid />
     </div>
   );
 }
