@@ -44,6 +44,7 @@ function App() {
         borderColor="luckyPoint"
         borderWidthStart="border"
         borderWidthInput="border"
+        start="arrow"
       ></CommonInput>
 
       <CommonInput

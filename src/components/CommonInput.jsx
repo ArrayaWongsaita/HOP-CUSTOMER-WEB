@@ -1,3 +1,6 @@
+import FindIcon from "../assets/icon/icon";
+import CircleButton from "./CircleButton";
+
 const borderColorCommonInput = {
   none: "border-none",
   luckyPoint: "border-luckyPoint",
@@ -30,7 +33,21 @@ const placeholderInput = {
 
 const startInput = {
   text: "You:",
-  common: "icon",
+  findPlace: <FindIcon />,
+  arrow: (
+    <CircleButton
+      bg="white"
+      width="arrow"
+      height="arrow"
+      borderColor="luckyPoint"
+      borderSize="arrow"
+      text="luckyPoint"
+      fontSize="arrow"
+      paddingT="arrow"
+    >
+      &#129104;
+    </CircleButton>
+  ),
 };
 
 export default function CommonInput({
@@ -41,7 +58,7 @@ export default function CommonInput({
   width = "places",
   height = "places",
   placeholder = "common",
-  start = "common",
+  start = "findPlace",
 }) {
   return (
     <div className="flex">
