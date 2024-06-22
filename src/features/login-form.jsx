@@ -21,8 +21,8 @@ export default function LoginForm() {
 
     return (
         <form >
-            <div className="w-full">
-                <div >
+            <div className="flex flex-col">
+                <div className="flex-1" >
                     <Input
                         placeholder={"Email Address or Phone"}
                         name={"emailOrPhone"}
@@ -31,7 +31,7 @@ export default function LoginForm() {
                         error={inputError.emailOrPhone}
                     />
                 </div>
-                <div >
+                <div className="flex-1" >
                     <Input
                         placeholder={"Password"}
                         name={"password"}
