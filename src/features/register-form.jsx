@@ -1,5 +1,10 @@
 import { useState } from "react";
+import { AxiosError } from "axios";
+
 import Input from "../components/Input";
+import CommonButton from "../components/CommonButton";
+import registerValidate from "../validators/register-validate";
+import customerApi from "../apis/customerApi";
 
 const initialInput = {
     firstName: '',
@@ -25,8 +30,30 @@ export default function RegisterForm() {
         setInput({ ...input, [event.target.name]: event.target.value })
     };
 
+    const handleSubmitForm = async (event) => {
+        try {
+            event.preventDefault();
+            const error = registerValidate(input);
+            if (error) return setInputError(error);
+            setInputError(initialInputError);
+            console.log('Register Success!!');
+
+            await customerApi.register(input);
+
+        }   catch (err) {
+            console.log(err)
+            if (err instanceof AxiosError) {
+                if (err.response.data.field === 'emailOrPhone')
+                  setInputError(prev => ({
+                    ...prev,
+                    emailOrMobile: 'Email or Phone already in use.'
+                  }));
+              }
+        }
+    }
+    
     return (
-        <form >
+        <form onSubmit={handleSubmitForm} >
             <div className="grid grid-cols-2 gap-2">
                 <div>
                     <Input
@@ -57,6 +84,7 @@ export default function RegisterForm() {
                 </div>
                 <div className="col-span-2" >
                     <Input
+                        type="password"
                         placeholder={"Password"}
                         name={"password"}
                         value={input.password}
@@ -66,6 +94,7 @@ export default function RegisterForm() {
                 </div>
                 <div className="col-span-2" >
                     <Input
+                        type="password"
                         placeholder={"Confirm Password"}
                         name={"confirmPassword"}
                         value={input.confirmPassword}
@@ -73,6 +102,11 @@ export default function RegisterForm() {
                         error={inputError.confirmPassword}
                     />
                 </div>
+            </div>
+            <div className="flex justify-center py-4">
+                <CommonButton >
+                    Register
+                </CommonButton>
             </div>
         </form>
     )

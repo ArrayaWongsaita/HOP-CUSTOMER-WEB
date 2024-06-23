@@ -20,7 +20,7 @@ export default function Input({ placeholder, type = 'text', error, onChange, val
         ${error ? 'border-red-500 focus:ring-red-300' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-300'}`}
         placeholder={placeholder}
       />
-      {error ? <small className="text-red-500 left-2 absolute bottom-0">{error}</small> : null}
+      {error ? <small className="text-red-500 left-2 absolute top-[50px]">{error}</small> : null}
     </div>
   );
 }
