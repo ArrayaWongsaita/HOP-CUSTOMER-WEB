@@ -1,6 +1,13 @@
 import React from "react";
 
 const LocationList = ({ locations, expanded, onSelectLocation }) => {
+  const defaultLocations = [
+    { description: "บ้าน", formatted_address: "บ้าน" },
+    { description: "ทีทำงาน", formatted_address: "ทีทำงาน" },
+    { description: "โรงเรียน", formatted_address: "โรงเรียน" },
+    { description: "ศูนย์การค้า", formatted_address: "ศูนย์การค้า" },
+  ];
+
   const handleSelectLocation = async (location) => {
     const placesService = new window.google.maps.places.PlacesService(
       document.createElement("div")
@@ -30,6 +37,9 @@ const LocationList = ({ locations, expanded, onSelectLocation }) => {
     );
   };
 
+  const locationsToDisplay =
+    locations.length > 0 ? locations : defaultLocations;
+
   return (
     <div className="">
       <div className="mt-2">ผลลัพธ์การค้นหา</div>
@@ -38,14 +48,14 @@ const LocationList = ({ locations, expanded, onSelectLocation }) => {
           expanded ? "max-h-[630px]" : "max-h-[290px]"
         }`}
       >
-        {locations.map((location, index) => (
+        {locationsToDisplay.map((location, index) => (
           <div key={index} className="bg-white p-[2px] rounded-2xl">
             <button
               className="bg-sky-800 flex items-center rounded-md h-[70px] w-full"
               onClick={() => handleSelectLocation(location)}
             >
               <div className="bg-sky-800 flex items-center rounded-md h-[70px]">
-                <div className="flex items-center justify-center ml-2 bg-green-300 min-h-[44px] max-h-[44px]">
+                <div className="flex items-center justify-center ml-2 bg-green-300 min-h-[44px] max-h-[44px] min-w-[44px] max-w-[44px]">
                   icon
                 </div>
                 <div className="p-2 flex flex-col flex-grow justify-center text-white">

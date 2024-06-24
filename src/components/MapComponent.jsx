@@ -12,14 +12,22 @@ function MapComponent({ locationA, locationB, route }) {
   useEffect(() => {
     if (mapRef.current && locationA) {
       mapRef.current.panTo(locationA);
+      console.log("GPS location A:", locationA);
     }
   }, [locationA]);
 
   useEffect(() => {
     if (mapRef.current && locationB) {
       mapRef.current.panTo(locationB);
+      console.log("GPS location B:", locationB);
     }
   }, [locationB]);
+
+  useEffect(() => {
+    if (route) {
+      console.log("Route details:", route);
+    }
+  }, [route]);
 
   const onLoad = (map) => {
     mapRef.current = map;
@@ -33,7 +41,7 @@ function MapComponent({ locationA, locationB, route }) {
     <GoogleMap
       mapContainerStyle={containerStyle}
       center={locationA || { lat: 0, lng: 0 }}
-      zoom={15}
+      zoom={14}
       onLoad={onLoad}
       onError={onError}
     >

@@ -9,6 +9,7 @@ const LocationInput = ({
   handleSetLocationB,
   valueA,
   valueB,
+  setShowConfirmOrder,
 }) => {
   const [extraVisible, setExtraVisible] = useState(false);
   const [selectedAutocompleteResults, setSelectedAutocompleteResults] =
@@ -23,10 +24,14 @@ const LocationInput = ({
   const handleSelectLocation = (location) => {
     if (activeInput === "A") {
       handleSetLocationA(location);
+      console.log("Selected location A:", location);
     } else if (activeInput === "B") {
       handleSetLocationB(location);
+      console.log("Selected location B:", location);
     }
     setSelectedAutocompleteResults([]);
+    setShowConfirmOrder(true);
+    setInputVisible(false);
   };
 
   return (
@@ -46,9 +51,9 @@ const LocationInput = ({
           </button>
         </div>
         <div className="rounded-lg w-[387px]">
-          {inputVisible && extraVisible && (
+          {inputVisible && (
             <div className="bg-white flex items-center rounded-md h-[70px] w-[387px] mb-2">
-              <div className="flex items-center justify-center ml-2.5 bg-green-500 min-h-[44px] max-h-[44px]">
+              <div className="flex items-center justify-center ml-2.5 bg-green-500 min-h-[44px] max-h-[44px] min-w-[44px] max-w-[44px]">
                 icon
               </div>
               <div className="p-2 flex flex-col flex-grow">
@@ -65,7 +70,7 @@ const LocationInput = ({
             </div>
           )}
           <div className="bg-white flex items-center rounded-md h-[70px] w-[387px]">
-            <div className="flex items-center justify-center ml-2.5 bg-red-600 min-h-[44px] max-h-[44px]">
+            <div className="flex items-center justify-center ml-2.5 bg-red-600 min-h-[44px] max-h-[44px] min-w-[44px] max-w-[44px]">
               icon
             </div>
             <div className="p-2 flex flex-col flex-grow">
@@ -78,6 +83,7 @@ const LocationInput = ({
               />
             </div>
           </div>
+
           <LocationList
             locations={selectedAutocompleteResults}
             expanded={extraVisible}
