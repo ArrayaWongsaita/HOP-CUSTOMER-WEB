@@ -24,6 +24,7 @@ function Homepage() {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
+        console.log(currentLocation);
         setLocationA(currentLocation);
         const placeName = await reverseGeocode(currentLocation);
         setValueA(placeName);
