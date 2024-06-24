@@ -9,7 +9,8 @@ import customerApi from "../apis/customerApi";
 const initialInput = {
     firstName: '',
     lastName: '',
-    emailOrPhone: '',
+    email: '',
+    phone: '',
     password: '',
     confirmPassword: ''
 };
@@ -17,7 +18,8 @@ const initialInput = {
 const initialInputError = {
     firstName: '',
     lastName: '',
-    emailOrPhone: '',
+    email: '',
+    phone: '',
     password: '',
     confirmPassword: ''
 };
@@ -34,6 +36,7 @@ export default function RegisterForm() {
         try {
             event.preventDefault();
             const error = registerValidate(input);
+            console.log(error)
             if (error) return setInputError(error);
             setInputError(initialInputError);
             console.log('Register Success!!');
@@ -43,22 +46,28 @@ export default function RegisterForm() {
         }   catch (err) {
             console.log(err)
             if (err instanceof AxiosError) {
-                if (err.response.data.field === 'emailOrPhone')
+                if (err.response.data.field === 'email')
                   setInputError(prev => ({
                     ...prev,
-                    emailOrMobile: 'Email or Phone already in use.'
+                    email: 'Email already in use.'
+                  }));
+              }
+            if (err instanceof AxiosError) {
+                if (err.response.data.field === 'phone')
+                  setInputError(prev => ({
+                    ...prev,
+                    phone: 'Phone number already in use.'
                   }));
               }
         }
     }
-    
     return (
         <form onSubmit={handleSubmitForm} >
             <div className="grid grid-cols-2 gap-2">
                 <div>
                     <Input
                         placeholder={"First name"}
-                        name={"firstName"}
+                        name="firstName"
                         value={input.firstName}
                         onChange={handleChangeInput}
                         error={inputError.firstName}
@@ -67,7 +76,7 @@ export default function RegisterForm() {
                 <div>
                     <Input
                         placeholder={"Last name"}
-                        name={"lastName"}
+                        name="lastName"
                         value={input.lastName}
                         onChange={handleChangeInput}
                         error={inputError.lastName}
@@ -75,18 +84,27 @@ export default function RegisterForm() {
                 </div>
                 <div className="col-span-2" >
                     <Input
-                        placeholder={"Email Address or Phone"}
-                        name={"emailOrPhone"}
-                        value={input.emailOrPhone}
+                        placeholder={"Email Address"}
+                        name="email"
+                        value={input.email}
                         onChange={handleChangeInput}
-                        error={inputError.emailOrPhone}
+                        error={inputError.email}
+                    />
+                </div>
+                <div className="col-span-2" >
+                    <Input
+                        placeholder={"Phone number"}
+                        name="phone"
+                        value={input.phone}
+                        onChange={handleChangeInput}
+                        error={inputError.phone}
                     />
                 </div>
                 <div className="col-span-2" >
                     <Input
                         type="password"
                         placeholder={"Password"}
-                        name={"password"}
+                        name="password"
                         value={input.password}
                         onChange={handleChangeInput}
                         error={inputError.password}
@@ -96,7 +114,7 @@ export default function RegisterForm() {
                     <Input
                         type="password"
                         placeholder={"Confirm Password"}
-                        name={"confirmPassword"}
+                        name="confirmPassword"
                         value={input.confirmPassword}
                         onChange={handleChangeInput}
                         error={inputError.confirmPassword}
