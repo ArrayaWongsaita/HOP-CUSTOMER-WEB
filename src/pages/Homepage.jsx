@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { LoadScript } from "@react-google-maps/api";
 import MapSection from "../components/MapSection";
 import LocationInput from "../components/LocationInput";
-import Header from "../components/Header";
 import Modal from "../components/Modal";
 import ConfirmOrder from "../components/ConfirmOrder";
 
@@ -125,13 +124,12 @@ function Homepage() {
   };
 
   return (
-    <div className>
+    <div>
       <div className="max-w-[430px] max-h-[932px] min-w-[430px] min-h-[932px] relative overflow-hidden">
         <LoadScript
           googleMapsApiKey={GOOGLE_MAPS_API_KEY}
           libraries={["places"]}
         >
-          <Header />
           <div className="mt-[70px] h-[calc(100%-70px)]">
             {!inputVisible && (
               <MapSection
