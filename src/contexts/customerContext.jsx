@@ -8,7 +8,8 @@ import { setAccessToken, getAccessToken, removeAccessToken } from "../utils/loca
 export const CustomerContext = createContext();
 
 export default function CustomerContextProvider({ children }) {
-    const [customerUser, setCustomerUser] = useState(null)
+    const [customerUser, setCustomerUser] = useState(null);
+    const [isCustomerUserLoading, setIsCustomerUserLoading] = useState(true);
 
     useEffect(() => {
         customerLogin();
@@ -22,6 +23,8 @@ export default function CustomerContextProvider({ children }) {
             }
         }   catch (err) {
             console.log(err);
+        }   finally {
+            setIsCustomerUserLoading(false);
         }
     };
     
@@ -37,9 +40,16 @@ export default function CustomerContextProvider({ children }) {
         setCustomerUser(null);
     };
     
+    const value = {
+        customerUser,
+        isCustomerUserLoading,
+        login,
+        logout
+    };
+    
     return (
         <CustomerContext.Provider
-        value={{ customerUser, login, logout }}
+        value={ value }
         >
             {children}
         </CustomerContext.Provider>

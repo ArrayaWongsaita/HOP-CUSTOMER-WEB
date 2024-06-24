@@ -33,6 +33,7 @@ export default function LoginForm() {
         try {
             event.preventDefault();
             const error = loginValidate(input);
+            console.log(error);
             if (error) return setInputError(error);
             setInputError(initialInputError);
             console.log('Login Success!!');
