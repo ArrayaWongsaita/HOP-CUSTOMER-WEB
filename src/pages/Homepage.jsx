@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { LoadScript } from "@react-google-maps/api";
 import MapSection from "../components/MapSection";
 import LocationInput from "../components/LocationInput";
@@ -25,6 +25,7 @@ function Homepage() {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
+        console.log(currentLocation);
         setLocationA(currentLocation);
         const placeName = await reverseGeocode(currentLocation);
         setValueA(placeName);
@@ -125,7 +126,7 @@ function Homepage() {
   };
 
   return (
-    <div className>
+    <div>
       <div className="max-w-[430px] max-h-[932px] min-w-[430px] min-h-[932px] relative overflow-hidden">
         <LoadScript
           googleMapsApiKey={GOOGLE_MAPS_API_KEY}
