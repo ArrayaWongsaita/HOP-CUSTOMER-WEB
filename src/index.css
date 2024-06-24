@@ -9,3 +9,11 @@
   transition: transform 0.2s ease, opacity 0.2s ease;
   opacity: 1;
 }
+
+body {
+  background: rgb(46, 62, 111);
+  background: linear-gradient(135deg, rgba(46, 62, 111, 1) 20%, rgba(0, 0, 0, 1) 85%);
+  width: 100vw;
+  height: 100vh;
+  background-attachment: fixed;
+}

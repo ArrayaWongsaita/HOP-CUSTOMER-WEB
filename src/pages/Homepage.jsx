@@ -1,8 +1,7 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { LoadScript } from "@react-google-maps/api";
 import MapSection from "../components/MapSection";
 import LocationInput from "../components/LocationInput";
-import Header from "../components/Header";
 import Modal from "../components/Modal";
 import ConfirmOrder from "../components/ConfirmOrder";
 
@@ -132,7 +131,6 @@ function Homepage() {
           googleMapsApiKey={GOOGLE_MAPS_API_KEY}
           libraries={["places"]}
         >
-          <Header />
           <div className="mt-[70px] h-[calc(100%-70px)]">
             {!inputVisible && (
               <MapSection
