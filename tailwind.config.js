@@ -29,10 +29,14 @@ export default {
         "auto-fit-minmax-255": "repeat(auto-fit, minmax(255px, 1fr))",
       },
       fontFamily: {
-        sans: ["Poppins", "sans-serif"],
+        sans: ["Amiko", "sans-serif"], // ตั้งค่าฟอนต์
       },
       colors: {
         customBeige: "#f8f4ed",
+        luckyPoint: "#1d2b53",
+        torchRed: "#ff004d",
+        gainsboro: "#dbdbdb",
+        corn: "#faef5d",
       },
     },
   },
