@@ -58,7 +58,7 @@ const paddingTBtn = {
   arrow: "pt-1.5",
 };
 
-const CircleButton = ({
+export default function CircleButton({
   children,
   bg = "luckyPoint",
   text = "white",
@@ -71,7 +71,7 @@ const CircleButton = ({
   outlineColor = "common",
   outlineWidth = "common",
   paddingT = "common",
-}) => {
+}) {
   return (
     <button
       className={`${bgBtn[bg]} ${textBtn[text]} ${widthBtn[width]}  border ${borderSizeBtn[borderSize]} ${borderColorBtn[borderColor]} rounded-full px-1 py-1 ${paddingTBtn[paddingT]} ${fontSizeBtn[fontSize]} ${fontBoldBtn[fontBold]} ${outlineColorBtn[outlineColor]} outline ${outlineWidthBtn[outlineWidth]} ${heightBtn[height]} flex items-center justify-center text-center font`}
@@ -79,6 +79,4 @@ const CircleButton = ({
       {children}
     </button>
   );
-};
-
-export default CircleButton;
+}
