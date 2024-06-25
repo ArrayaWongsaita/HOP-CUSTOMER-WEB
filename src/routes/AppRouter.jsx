@@ -3,8 +3,9 @@ import { createBrowserRouter } from "react-router-dom";
 import RegisterAndLoginPage from "../pages/RegisterAndLoginPage";
 import MainContainer from "../layouts/MainContainer";
 import Homepage from "../pages/Homepage";
+import ChatContainer from "../features/chat/components/ChatContainer";
+import ProfileSetting from "../pages/ProfileSetting";
 // import ProtectedRoute from "../features/ProtectedRoute";
-
 
 const router = createBrowserRouter([
   {
@@ -19,10 +20,15 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       // <ProtectedRoute>
-        <MainContainer />
+      <MainContainer />
       // </ProtectedRoute>
     ),
-    children: [{ path: "/", element: <Homepage /> }],
+    children: [
+      { path: "/", element: <Homepage /> },
+      { path: "/chat/admin", element: <ChatContainer chatWith="Admin"/>},
+      { path: "/chat/rider", element: <ChatContainer />},
+      { path: "/55466", element: <ProfileSetting /> }
+    ],
   },
 ]);
 
