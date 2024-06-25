@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import LocationList from "./LocationList";
 import LocationPicker from "./LocationPicker";
+import { reverseGeocode } from "../utils/geocodeUtils"; // นำเข้า reverseGeocode
+import { LocationA, LocationB, SearchIcon } from "../icons";
 
 const LocationInput = ({
   setInputVisible,
@@ -9,7 +11,9 @@ const LocationInput = ({
   handleSetLocationB,
   valueA,
   valueB,
+  setValueB,
   setShowConfirmOrder,
+  setValueA, // เพิ่ม setValueA
 }) => {
   const [extraVisible, setExtraVisible] = useState(false);
   const [selectedAutocompleteResults, setSelectedAutocompleteResults] =
@@ -24,7 +28,9 @@ const LocationInput = ({
   const handleSelectLocation = (location) => {
     if (activeInput === "A") {
       handleSetLocationA(location);
-      handleSetLocationB(null); // Reset จุดส่ง
+      handleSetLocationB(null);
+      setValueB("");
+      setValueA(location.description || ""); // เพิ่มการตั้งค่า description ให้กับ setValueA
       console.log("Selected location A:", location);
     } else if (activeInput === "B") {
       handleSetLocationB(location);
@@ -32,36 +38,84 @@ const LocationInput = ({
     }
     setSelectedAutocompleteResults([]);
 
-    // เช็คว่ามี lat/lng ของจุดรับและจุดส่งครบหรือไม่
     if (location.lat && location.lng && valueA && valueB) {
-      setShowConfirmOrder(true); // แสดง modal ยืนยันการสั่งซื้อ
-      setInputVisible(false); // ปิด modal ป้อนข้อมูล
+      setShowConfirmOrder(true);
+      setInputVisible(false);
     } else {
-      setShowConfirmOrder(false); // ซ่อน modal ยืนยันการสั่งซื้อ
-      setInputVisible(true); // เปิด modal ป้อนข้อมูล
+      setShowConfirmOrder(false);
+      setInputVisible(true);
     }
   };
 
   const handleLocationChangeA = async (newLocation) => {
-    if (newLocation.lat && newLocation.lng) {
-      handleSetLocationA(newLocation);
-      handleSetLocationB(null); // Reset จุดส่ง
-      console.log("Location A changed:", newLocation);
-    } else if (newLocation.description) {
-      handleSetLocationA(newLocation);
-      handleSetLocationB(null); // Reset จุดส่ง
-      console.log("Location A description changed:", newLocation.description);
-    } else {
-      handleSetLocationA(null);
-      handleSetLocationB(null); // Reset จุดส่ง
-      console.log("Location A cleared");
-    }
+    handleSetLocationA(newLocation);
+    handleSetLocationB(null);
+    setValueB("");
+    console.log("Location A changed:", newLocation);
   };
 
   const handleButtonClick = () => {
     setInputVisible(!inputVisible);
-    setExtraVisible(true); // ตั้งค่า extraVisible เป็น true เมื่อกดปุ่ม
+    setExtraVisible(true);
+    handleSetLocationB(null);
+    if (setValueB) setValueB("");
+
     console.log("Input visibility toggled:", inputVisible);
+  };
+
+  const handleBlur = async () => {
+    if (selectedAutocompleteResults.length > 0) {
+      const location = selectedAutocompleteResults[0];
+      if (location.place_id) {
+        const geocoder = new window.google.maps.Geocoder();
+        geocoder.geocode({ placeId: location.place_id }, (results, status) => {
+          if (status === "OK" && results[0]) {
+            const detailedLocation = {
+              lat: results[0].geometry.location.lat(),
+              lng: results[0].geometry.location.lng(),
+              description: results[0].formatted_address,
+            };
+            handleSelectLocation(detailedLocation);
+            setValueA(detailedLocation.description);
+          } else {
+            console.error(
+              "Geocode was not successful for the following reason:",
+              status
+            );
+          }
+        });
+      } else {
+        const description =
+          location.description ||
+          (await reverseGeocode(
+            location,
+            import.meta.env.VITE_GOOGLE_MAPS_API_KEY
+          ));
+        handleSelectLocation({ ...location, description });
+        setValueA(description);
+      }
+    } else {
+      // Use GPS location if no selection from autocomplete results
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const currentLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          const placeName = await reverseGeocode(
+            currentLocation,
+            import.meta.env.VITE_GOOGLE_MAPS_API_KEY
+          );
+          const location = { ...currentLocation, description: placeName };
+          handleSetLocationA(location); // เรียกใช้ handleSetLocationA สำหรับ GPS location
+          setValueA(placeName); // ใช้ setValueA ที่รับเข้ามา
+        },
+        (error) => {
+          console.error("Error getting current location:", error);
+          setValueA("Unknown Location");
+        }
+      );
+    }
   };
 
   return (
@@ -77,37 +131,38 @@ const LocationInput = ({
         <div className="rounded-lg w-[387px]">
           {inputVisible && (
             <div className="bg-white flex items-center rounded-md h-[70px] w-[387px] mb-2">
-              <div className="flex items-center justify-center ml-2.5 bg-green-500 min-h-[44px] max-h-[44px] min-w-[44px] max-w-[44px]">
-                icon
+              <div className="flex items-center justify-center ml-2.5  min-h-[44px] max-h-[44px] min-w-[44px] max-w-[44px]">
+                <LocationA />
               </div>
               <div className="p-2 flex flex-col flex-grow">
                 <LocationPicker
                   onAutocompleteResults={handleAutocompleteResults}
-                  placeholder="จุดรับ"
+                  placeholder="Where from?"
                   onInputFocus={() => setActiveInput("A")}
                   value={valueA}
                   onChange={(value) =>
                     handleLocationChangeA({ description: value })
                   }
+                  onBlur={handleBlur} // เพิ่ม onBlur
                 />
               </div>
             </div>
           )}
           <button onClick={() => setInputVisible(true)}>
-            {/* ตั้งค่า extraVisible เป็น true เมื่อกดปุ่ม */}
             <div className="bg-white flex items-center rounded-md h-[70px] w-[387px]">
-              <div className="flex items-center justify-center ml-2.5 bg-red-600 min-h-[44px] max-h-[44px] min-w-[44px] max-w-[44px]">
-                icon
+              <div className="flex items-center justify-center ml-2.5 min-h-[44px] max-h-[44px] min-w-[44px] max-w-[44px]">
+                {inputVisible ? <LocationB /> : <SearchIcon />}
               </div>
               <div className="p-2 flex flex-col flex-grow">
                 <LocationPicker
                   onAutocompleteResults={handleAutocompleteResults}
-                  placeholder="จุดส่ง"
+                  placeholder="Where to ?"
                   onInputFocus={() => setActiveInput("B")}
                   value={valueB}
-                  onChange={(value) =>
-                    handleSetLocationB({ description: value })
-                  }
+                  onChange={(value) => {
+                    if (setValueB) setValueB(value);
+                    handleSetLocationB({ description: value });
+                  }}
                 />
               </div>
             </div>
@@ -117,6 +172,7 @@ const LocationInput = ({
             locations={selectedAutocompleteResults}
             expanded={extraVisible}
             onSelectLocation={handleSelectLocation}
+            inputVisible={inputVisible}
           />
         </div>
       </div>

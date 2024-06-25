@@ -4,6 +4,7 @@ import MapSection from "../components/MapSection";
 import LocationInput from "../components/LocationInput";
 import Modal from "../components/Modal";
 import ConfirmOrder from "../components/ConfirmOrder";
+import { reverseGeocode } from "../utils/geocodeUtils"; // Import ฟังก์ชันจาก geocodeUtils
 
 function Homepage() {
   const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -25,8 +26,11 @@ function Homepage() {
           lng: position.coords.longitude,
         };
         console.log(currentLocation);
-        setLocationA(currentLocation);
-        const placeName = await reverseGeocode(currentLocation);
+        const placeName = await reverseGeocode(
+          currentLocation,
+          GOOGLE_MAPS_API_KEY
+        );
+        setLocationA({ ...currentLocation, description: placeName });
         setValueA(placeName);
       },
       (error) => {
@@ -43,37 +47,14 @@ function Homepage() {
     }
   }, [locationA, locationB]);
 
-  const reverseGeocode = async (location) => {
-    if (
-      !location ||
-      typeof location.lat !== "number" ||
-      typeof location.lng !== "number"
-    ) {
-      console.error("Invalid location:", location);
-      return "Unknown Location";
-    }
-
-    try {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.lat},${location.lng}&key=${GOOGLE_MAPS_API_KEY}`
-      );
-      const data = await response.json();
-      if (data.results && data.results.length > 0) {
-        return data.results[0].formatted_address;
-      } else {
-        return "Unknown Location";
-      }
-    } catch (error) {
-      console.error("Error in reverseGeocode:", error);
-      return "Unknown Location";
-    }
-  };
-
   const handleLocationChangeA = async (newLocation) => {
-    if (newLocation.lat && newLocation.lng) {
-      setLocationA(newLocation);
-      setValueA(newLocation.description || (await reverseGeocode(newLocation)));
-    } else if (newLocation.description) {
+    if (newLocation && newLocation.lat && newLocation.lng) {
+      const description =
+        newLocation.description ||
+        (await reverseGeocode(newLocation, GOOGLE_MAPS_API_KEY));
+      setLocationA({ ...newLocation, description });
+      setValueA(description);
+    } else if (newLocation && newLocation.description) {
       setValueA(newLocation.description);
       // You may want to geocode the description to get lat/lng
     } else {
@@ -83,10 +64,13 @@ function Homepage() {
   };
 
   const handleLocationChangeB = async (newLocation) => {
-    if (newLocation.lat && newLocation.lng) {
-      setLocationB(newLocation);
-      setValueB(newLocation.description || (await reverseGeocode(newLocation)));
-    } else if (newLocation.description) {
+    if (newLocation && newLocation.lat && newLocation.lng) {
+      const description =
+        newLocation.description ||
+        (await reverseGeocode(newLocation, GOOGLE_MAPS_API_KEY));
+      setLocationB({ ...newLocation, description });
+      setValueB(description);
+    } else if (newLocation && newLocation.description) {
       setValueB(newLocation.description);
       // You may want to geocode the description to get lat/lng
     } else {
@@ -119,7 +103,7 @@ function Homepage() {
   };
 
   const handleBackButtonClick = () => {
-    setRoute(null); // รีเซ็ตสถานะ route
+    setRoute(null);
     setShowConfirmOrder(false);
     setInputVisible(true);
   };
@@ -148,14 +132,17 @@ function Homepage() {
                   handleSetLocationB={handleLocationChangeB}
                   valueA={valueA}
                   valueB={valueB}
+                  setValueB={setValueB}
                   setShowConfirmOrder={setShowConfirmOrder}
+                  setValueA={setValueA} // ส่ง setValueA ไปด้วย
                 />
               </Modal>
             )}
             {showConfirmOrder && (
               <Modal>
                 <ConfirmOrder
-                  locationB={valueB}
+                  locationA={locationA}
+                  locationB={locationB}
                   duration={duration}
                   distance={distance}
                   onBackButtonClick={handleBackButtonClick}
