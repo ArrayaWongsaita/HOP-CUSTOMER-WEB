@@ -9,6 +9,7 @@ function LocationPicker({
   onInputFocus,
   value,
   onChange,
+  onBlur,
 }) {
   const [address, setAddress] = useState(value || "");
   const autocompleteServiceRef = useRef(null);
@@ -75,8 +76,9 @@ function LocationPicker({
         value={address}
         onChange={handleInputChange}
         onFocus={onInputFocus}
+        onBlur={onBlur}
         placeholder={placeholder}
-        className="p-2 border border-gray-300 rounded w-full"
+        className="p-2 rounded w-full"
         style={{ padding: "10px", boxSizing: "border-box" }}
       />
     </div>
