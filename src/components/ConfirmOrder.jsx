@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import CircleButton from "./CircleButton";
 import { ArrowLeft } from "../icons";
+import { CustomerContext } from "../contexts/CustomerContext"; // Import context
 
 const ConfirmOrder = ({
   locationA,
@@ -11,6 +12,7 @@ const ConfirmOrder = ({
 }) => {
   const [durationInMinutes, setDurationInMinutes] = useState(0);
   const [distanceInKm, setDistanceInKm] = useState(0);
+  const { customerUser } = useContext(CustomerContext); // ใช้ useContext เพื่อดึงข้อมูล user
 
   useEffect(() => {
     const parseDuration = (durationStr) => {
@@ -48,6 +50,7 @@ const ConfirmOrder = ({
     const fare = distanceInKm < 3 ? 30 : distanceInKm * 10;
 
     const order = {
+      userId: customerUser.id, // เพิ่ม id ของผู้ใช้ใน order
       locationA,
       locationB,
       distanceInKm,

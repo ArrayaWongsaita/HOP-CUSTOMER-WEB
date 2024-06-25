@@ -46,17 +46,17 @@ function LocationPicker({
     const inputValue = e.target.value;
     setAddress(inputValue);
     onChange(inputValue);
-    console.log("Input changed:", inputValue);
+    // console.log("Input changed:", inputValue);
 
     if (autocompleteServiceRef.current && inputValue.length > 0) {
       autocompleteServiceRef.current.getPlacePredictions(
         { input: inputValue, componentRestrictions: { country: "th" } },
         (predictions, status) => {
           if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            console.log("Predictions received:", predictions);
+            // console.log("Predictions received:", predictions);
             onAutocompleteResults(predictions || []);
           } else {
-            console.log("No predictions received");
+            // console.log("No predictions received");
             onAutocompleteResults([]);
           }
         }

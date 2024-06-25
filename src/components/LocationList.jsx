@@ -125,7 +125,7 @@ const LocationList = ({
               lng: placeResult.geometry.location.lng(),
               description: location.description || location.formatted_address,
             };
-            console.log("Location selected:", selectedLocation);
+            // console.log("Location selected:", selectedLocation);
             onSelectLocation(selectedLocation);
           } else {
             console.error("Error fetching place details:", status);

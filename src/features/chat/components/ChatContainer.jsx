@@ -1,13 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import socketIOClient from "socket.io-client";
 
-const ENDPOINT = "http://localhost:8888";
-let delaySendMessage = false
+const ENDPOINT = import.meta.env.VITE_API_URL;
+let delaySendMessage = false;
 
-
-
-export default function ChatContainer({chatWith = 'Rider'}) {
-
+export default function ChatContainer({ chatWith = "Rider" }) {
   const socket = useRef(null); // ใช้ useRef แทนการสร้าง socket ใหม่ในทุกครั้งที่เรนเดอร์
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -15,12 +12,11 @@ export default function ChatContainer({chatWith = 'Rider'}) {
   const [isTyping, setIsTyping] = useState(false);
   const chatId = 1;
 
-  
   const messagesEndRef = useRef(null);
-  
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages,isTyping]);
+  }, [messages, isTyping]);
 
   useEffect(() => {
     if (!socket.current) {
@@ -30,14 +26,14 @@ export default function ChatContainer({chatWith = 'Rider'}) {
         setMessages(messages);
       });
       socket.current.on("newMessage", (message) => {
-        console.log(message)
+        console.log(message);
         setIsTyping(false);
         setMessages((messages) => [...messages, message]);
       });
-      
+
       socket.current.on("typing", ({ role }) => {
         if (role !== "USER") {
-          console.log('typing')
+          console.log("typing");
           setIsTyping(true);
           setTimeout(() => {
             setIsTyping(false);
@@ -45,7 +41,7 @@ export default function ChatContainer({chatWith = 'Rider'}) {
         }
       });
     }
-    
+
     return () => {
       if (socket.current) {
         socket.current.disconnect();
@@ -65,8 +61,7 @@ export default function ChatContainer({chatWith = 'Rider'}) {
 
   const sendMessage = () => {
     if (message.trim() && !delaySendMessage) {
-
-      console.log('send');
+      console.log("send");
       socket.current.emit("sendMessage", {
         chatId,
         senderId: 1,
@@ -74,9 +69,9 @@ export default function ChatContainer({chatWith = 'Rider'}) {
         senderRole: "USER",
       });
       setMessage("");
-       delaySendMessage = true
+      delaySendMessage = true;
       setTimeout(() => {
-        delaySendMessage = false
+        delaySendMessage = false;
       }, 1200);
     }
   };
