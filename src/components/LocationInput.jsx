@@ -21,7 +21,7 @@ const LocationInput = ({
   const [activeInput, setActiveInput] = useState(null);
 
   const handleAutocompleteResults = (results) => {
-    console.log("Autocomplete results:", results);
+    // console.log("Autocomplete results:", results);
     setSelectedAutocompleteResults(results);
   };
 
@@ -31,10 +31,10 @@ const LocationInput = ({
       handleSetLocationB(null);
       setValueB("");
       setValueA(location.description || ""); // เพิ่มการตั้งค่า description ให้กับ setValueA
-      console.log("Selected location A:", location);
+      // console.log("Selected location A:", location);
     } else if (activeInput === "B") {
       handleSetLocationB(location);
-      console.log("Selected location B:", location);
+      // console.log("Selected location B:", location);
     }
     setSelectedAutocompleteResults([]);
 
@@ -60,7 +60,7 @@ const LocationInput = ({
     handleSetLocationB(null);
     if (setValueB) setValueB("");
 
-    console.log("Input visibility toggled:", inputVisible);
+    // console.log("Input visibility toggled:", inputVisible);
   };
 
   const handleBlur = async () => {

@@ -5,7 +5,7 @@ import MainContainer from "../layouts/MainContainer";
 import Homepage from "../pages/Homepage";
 import ChatContainer from "../features/chat/components/ChatContainer";
 import ProfileSetting from "../pages/ProfileSetting";
-// import ProtectedRoute from "../features/ProtectedRoute";
+import ProtectedRoute from "../features/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -19,15 +19,15 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      // <ProtectedRoute>
-      <MainContainer />
-      // </ProtectedRoute>
+      <ProtectedRoute>
+        <MainContainer />
+      </ProtectedRoute>
     ),
     children: [
       { path: "/", element: <Homepage /> },
-      { path: "/chat/admin", element: <ChatContainer chatWith="Admin"/>},
-      { path: "/chat/rider", element: <ChatContainer />},
-      { path: "/55466", element: <ProfileSetting /> }
+      { path: "/chat/admin", element: <ChatContainer chatWith="Admin" /> },
+      { path: "/chat/rider", element: <ChatContainer /> },
+      { path: "/55466", element: <ProfileSetting /> },
     ],
   },
 ]);
