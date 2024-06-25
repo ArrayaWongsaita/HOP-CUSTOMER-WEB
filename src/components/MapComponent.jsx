@@ -10,18 +10,18 @@ function MapComponent({ locationA, locationB, route }) {
   const mapRef = useRef(null);
 
   useEffect(() => {
-    if (mapRef.current && locationA) {
+    if (mapRef.current && locationA && !route) {
       mapRef.current.panTo(locationA);
       console.log("GPS location A:", locationA);
     }
-  }, [locationA]);
+  }, [locationA, route]);
 
   useEffect(() => {
-    if (mapRef.current && locationB) {
+    if (mapRef.current && locationB && !route) {
       mapRef.current.panTo(locationB);
       console.log("GPS location B:", locationB);
     }
-  }, [locationB]);
+  }, [locationB, route]);
 
   useEffect(() => {
     if (route) {
@@ -45,8 +45,8 @@ function MapComponent({ locationA, locationB, route }) {
       onLoad={onLoad}
       onError={onError}
     >
-      {locationA && <Marker position={locationA} />}
-      {locationB && <Marker position={locationB} />}
+      {!route && locationA && <Marker position={locationA} />}
+      {!route && locationB && <Marker position={locationB} />}
       {route && <DirectionsRenderer directions={route} />}
     </GoogleMap>
   );

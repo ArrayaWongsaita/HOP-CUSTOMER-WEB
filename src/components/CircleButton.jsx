@@ -71,10 +71,12 @@ export default function CircleButton({
   outlineColor = "common",
   outlineWidth = "common",
   paddingT = "common",
+  onClick, // เพิ่มการรองรับ onClick
 }) {
   return (
     <button
       className={`${bgBtn[bg]} ${textBtn[text]} ${widthBtn[width]}  border ${borderSizeBtn[borderSize]} ${borderColorBtn[borderColor]} rounded-full px-1 py-1 ${paddingTBtn[paddingT]} ${fontSizeBtn[fontSize]} ${fontBoldBtn[fontBold]} ${outlineColorBtn[outlineColor]} outline ${outlineWidthBtn[outlineWidth]} ${heightBtn[height]} flex items-center justify-center text-center font`}
+      onClick={onClick} // เพิ่มการรองรับ onClick
     >
       {children}
     </button>
