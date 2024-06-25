@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import CircleButton from "./CircleButton";
+import { ArrowLeft } from "../icons";
 
 const ConfirmOrder = ({
   locationA,
@@ -12,10 +13,8 @@ const ConfirmOrder = ({
   const [distanceInKm, setDistanceInKm] = useState(0);
 
   useEffect(() => {
-    // ฟังก์ชันเพื่อแปลง duration เป็นนาที
     const parseDuration = (durationStr) => {
       let totalMinutes = 0;
-
       const hourMinuteParts = durationStr.match(
         /(\d+)\s*ชั่วโมง\s*(\d*)\s*นาที/
       );
@@ -37,9 +36,8 @@ const ConfirmOrder = ({
       return totalMinutes;
     };
 
-    // ฟังก์ชันเพื่อแปลง distance เป็นตัวเลข
     const parseDistance = (distanceStr) => {
-      return +distance.slice(0, -3);
+      return +distanceStr.slice(0, -3);
     };
 
     setDurationInMinutes(parseDuration(duration));
@@ -54,7 +52,7 @@ const ConfirmOrder = ({
       locationB,
       distanceInKm,
       durationInMinutes,
-      fare, // ค่าโดยสาร
+      fare,
     };
 
     console.log("Order:", order);
@@ -67,9 +65,10 @@ const ConfirmOrder = ({
           className="bg-white w-[387px] h-[70px] absolute top-[-400px] border border-black rounded-lg p-4 flex items-center"
           onClick={onBackButtonClick}
         >
-          <div className="flex items-center justify-center bg-red-600 min-h-[56px] max-h-[56px] min-w-[56px] max-w-[56px] rounded-full cursor-pointer">
-            back
+          <div className="flex items-center justify-center border-black border-2 min-h-[56px] max-h-[56px] min-w-[56px] max-w-[56px] rounded-full cursor-pointer">
+            <ArrowLeft />
           </div>
+
           <div className="flex items-center ml-2.5 text-[24px] w-[280px] max-h-[80px] overflow-hidden truncate whitespace-nowrap">
             {locationB.description || "Location B"}
           </div>
@@ -109,11 +108,13 @@ const ConfirmOrder = ({
             </div>
           </div>
           <div className="absolute bottom-[-80px] flex w-full items-center justify-center">
-            <button onClick={handleConfirm}>
-              <CircleButton outlineColor="confirm" outlineWidth="confirm">
-                Confirm
-              </CircleButton>
-            </button>
+            <CircleButton
+              outlineColor="confirm"
+              outlineWidth="confirm"
+              onClick={handleConfirm}
+            >
+              Confirm
+            </CircleButton>
           </div>
         </div>
       </div>
