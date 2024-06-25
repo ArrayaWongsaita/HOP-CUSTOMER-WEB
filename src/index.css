@@ -17,3 +17,29 @@ body {
   height: 100vh;
   background-attachment: fixed;
 }
+
+
+/* ================= typing animation =================== */
+@keyframes wave {
+  0%, 60%, 100% {
+      transform: translateY(0);
+  }
+  30% {
+      transform: translateY(-10px);
+  }
+}
+
+.animate-wave-1 {
+  animation: wave 1.5s infinite;
+  animation-delay: 0s;
+}
+
+.animate-wave-2 {
+  animation: wave 1.5s infinite;
+  animation-delay: 0.3s;
+}
+
+.animate-wave-3 {
+  animation: wave 1.5s infinite;
+  animation-delay: 0.6s;
+}
