@@ -3,8 +3,8 @@ import { createBrowserRouter } from "react-router-dom";
 import RegisterAndLoginPage from "../pages/RegisterAndLoginPage";
 import MainContainer from "../layouts/MainContainer";
 import Homepage from "../pages/Homepage";
+import ProfileSetting from "../pages/ProfileSetting";
 // import ProtectedRoute from "../features/ProtectedRoute";
-
 
 const router = createBrowserRouter([
   {
@@ -19,10 +19,11 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       // <ProtectedRoute>
-        <MainContainer />
+      <MainContainer />
       // </ProtectedRoute>
     ),
     children: [{ path: "/", element: <Homepage /> }],
+    children: [{ path: "/55466", element: <ProfileSetting /> }],
   },
 ]);
 
