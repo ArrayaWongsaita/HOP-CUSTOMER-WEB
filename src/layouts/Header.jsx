@@ -30,14 +30,13 @@ export default function Header() {
   }, []);
 
   const handleTestChat = ()=>{
-    // navigate('/chat/admin')
+
     console.log('na')
-    // closeMobileMenu()
+    closeMobileMenu()
   }
   const handleLogout = () => {
-    console.log("loout")
     logout()
-    navigate('/auth/register')
+    navigate('/auth/login')
     window.location.reload()
     
   }
