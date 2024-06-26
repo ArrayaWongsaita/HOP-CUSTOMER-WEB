@@ -3,12 +3,13 @@ import { createBrowserRouter } from "react-router-dom";
 import RegisterAndLoginPage from "../pages/RegisterAndLoginPage";
 import MainContainer from "../layouts/MainContainer";
 import Homepage from "../pages/Homepage";
-// import ProtectedRoute from "../features/ProtectedRoute";
-
+import ChatContainer from "../features/chat/components/ChatContainer";
+import ProfileSetting from "../pages/ProfileSetting";
+import ProtectedRoute from "../features/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
-    path: "/auth/register",
+    path: "/auth/login",
     element: (
       <div className="w-lvw h-lvh bg-black flex justify-center">
         <RegisterAndLoginPage />
@@ -22,7 +23,12 @@ const router = createBrowserRouter([
         <MainContainer />
       // </ProtectedRoute>
     ),
-    children: [{ path: "/", element: <Homepage /> }],
+    children: [
+      { path: "/home", element: <Homepage /> },
+      { path: "/", element: <ChatContainer chatWith="Admin" /> },
+      { path: "/chat/rider", element: <ChatContainer /> },
+      { path: "/55466", element: <ProfileSetting /> },
+    ],
   },
 ]);
 

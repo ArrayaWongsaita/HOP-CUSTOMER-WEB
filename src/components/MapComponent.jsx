@@ -12,20 +12,20 @@ function MapComponent({ locationA, locationB, route }) {
   useEffect(() => {
     if (mapRef.current && locationA && !route) {
       mapRef.current.panTo(locationA);
-      console.log("GPS location A:", locationA);
+      // console.log("GPS location A:", locationA);
     }
   }, [locationA, route]);
 
   useEffect(() => {
     if (mapRef.current && locationB && !route) {
       mapRef.current.panTo(locationB);
-      console.log("GPS location B:", locationB);
+      // console.log("GPS location B:", locationB);
     }
   }, [locationB, route]);
 
   useEffect(() => {
     if (route) {
-      console.log("Route details:", route);
+      // console.log("Route details:", route);
     }
   }, [route]);
 

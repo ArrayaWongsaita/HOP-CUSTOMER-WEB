@@ -5,6 +5,7 @@ import LocationInput from "../components/LocationInput";
 import Modal from "../components/Modal";
 import ConfirmOrder from "../components/ConfirmOrder";
 import { reverseGeocode } from "../utils/geocodeUtils"; // Import ฟังก์ชันจาก geocodeUtils
+import { useRef } from "react";
 
 function Homepage() {
   const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -17,6 +18,7 @@ function Homepage() {
   const [duration, setDuration] = useState("");
   const [inputVisible, setInputVisible] = useState(false);
   const [showConfirmOrder, setShowConfirmOrder] = useState(false);
+  const locationInputRef = useRef(null);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -25,7 +27,7 @@ function Homepage() {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
-        console.log(currentLocation);
+        // console.log(currentLocation);
         const placeName = await reverseGeocode(
           currentLocation,
           GOOGLE_MAPS_API_KEY
@@ -62,6 +64,22 @@ function Homepage() {
       setValueA("");
     }
   };
+
+  const handleClickOutside = (event) => {
+    if (
+      locationInputRef.current &&
+      !locationInputRef.current.contains(event.target)
+    ) {
+      setInputVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleLocationChangeB = async (newLocation) => {
     if (newLocation && newLocation.lat && newLocation.lng) {
@@ -110,12 +128,12 @@ function Homepage() {
 
   return (
     <div>
-      <div className="max-w-[430px] max-h-[932px] min-w-[430px] min-h-[932px] relative overflow-hidden">
+      <div className="max-w-[430px] min-w-[430px] h-[862px]  relative overflow-hidden">
         <LoadScript
           googleMapsApiKey={GOOGLE_MAPS_API_KEY}
           libraries={["places"]}
         >
-          <div className="mt-[70px] h-[calc(100%-70px)]">
+          <div className="mt-[0px] h-[calc(100%-70px)]">
             {!inputVisible && (
               <MapSection
                 locationA={locationA}
@@ -124,19 +142,21 @@ function Homepage() {
               />
             )}
             {!showConfirmOrder && (
-              <Modal inputVisible={inputVisible}>
-                <LocationInput
-                  setInputVisible={setInputVisible}
-                  inputVisible={inputVisible}
-                  handleSetLocationA={handleLocationChangeA}
-                  handleSetLocationB={handleLocationChangeB}
-                  valueA={valueA}
-                  valueB={valueB}
-                  setValueB={setValueB}
-                  setShowConfirmOrder={setShowConfirmOrder}
-                  setValueA={setValueA} // ส่ง setValueA ไปด้วย
-                />
-              </Modal>
+              <div ref={locationInputRef}>
+                <Modal inputVisible={inputVisible}>
+                  <LocationInput
+                    setInputVisible={setInputVisible}
+                    inputVisible={inputVisible}
+                    handleSetLocationA={handleLocationChangeA}
+                    handleSetLocationB={handleLocationChangeB}
+                    valueA={valueA}
+                    valueB={valueB}
+                    setValueB={setValueB}
+                    setShowConfirmOrder={setShowConfirmOrder}
+                    setValueA={setValueA} // ส่ง setValueA ไปด้วย
+                  />
+                </Modal>
+              </div>
             )}
             {showConfirmOrder && (
               <Modal>
