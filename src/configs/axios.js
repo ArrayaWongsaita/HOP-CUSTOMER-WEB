@@ -20,7 +20,7 @@ axios.interceptors.response.use(
   err => {
     if (err.response.status === 401) {
       removeAccessToken();
-      window.location.assign('/login');
+      window.location.assign('/auth/login');
       return;
     }
     return Promise.reject(err);

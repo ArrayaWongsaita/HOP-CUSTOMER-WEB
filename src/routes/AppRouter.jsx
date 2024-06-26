@@ -9,7 +9,7 @@ import ProtectedRoute from "../features/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
-    path: "/auth/register",
+    path: "/auth/login",
     element: (
       <div className="w-lvw h-lvh bg-black flex justify-center">
         <RegisterAndLoginPage />
@@ -24,8 +24,8 @@ const router = createBrowserRouter([
       // </ProtectedRoute>
     ),
     children: [
-      { path: "/", element: <Homepage /> },
-      { path: "/chat/admin", element: <ChatContainer chatWith="Admin" /> },
+      { path: "/home", element: <Homepage /> },
+      { path: "/", element: <ChatContainer chatWith="Admin" /> },
       { path: "/chat/rider", element: <ChatContainer /> },
       { path: "/55466", element: <ProfileSetting /> },
     ],
