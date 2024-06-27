@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 const widthIcon = {
   riderCall: "54px",
   riderHeader: "44px",
