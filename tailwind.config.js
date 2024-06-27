@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+
   theme: {
     extend: {
       gridTemplateColumns: {
@@ -10,6 +11,7 @@ export default {
         sans: ["Amiko", "sans-serif"], // ตั้งค่าฟอนต์
       },
       colors: {
+        customBeige: "#f8f4ed",
         luckyPoint: "#1d2b53",
         torchRed: "#ff004d",
         gainsboro: "#dbdbdb",
@@ -18,5 +20,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [import("@tailwindcss/line-clamp")],
 };
