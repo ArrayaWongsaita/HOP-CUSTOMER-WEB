@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useJsApiLoader } from "@react-google-maps/api";
 
 const libraries = ["places"];

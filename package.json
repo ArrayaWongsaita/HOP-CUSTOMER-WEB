@@ -13,6 +13,7 @@
     "@react-google-maps/api": "^2.19.3",
     "@tailwindcss/line-clamp": "^0.4.4",
     "axios": "^1.7.2",
+    "framer-motion": "^11.2.12",
     "joi": "^17.13.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

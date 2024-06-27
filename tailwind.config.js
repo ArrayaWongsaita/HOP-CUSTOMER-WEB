@@ -16,7 +16,18 @@ export default {
         gainsboro: "#dbdbdb",
         corn: "#faef5d",
       },
+      keyframes: {
+        dots: {
+          "0%, 20%": { content: "' '" },
+          "40%": { content: "'.'" },
+          "60%": { content: "'..'" },
+          "80%, 100%": { content: "'...'" },
+        },
+      },
+      animation: {
+        dots: "dots 1.5s steps(1, end) infinite",
+      },
     },
   },
-  plugins: [import("@tailwindcss/line-clamp")],
+  plugins: [require("@tailwindcss/line-clamp")],
 };

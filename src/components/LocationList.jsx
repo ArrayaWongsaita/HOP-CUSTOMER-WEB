@@ -89,7 +89,6 @@
 
 // export default LocationList;
 
-import React from "react";
 import { LocationIcon, TimeIcon } from "../icons";
 
 const LocationList = ({

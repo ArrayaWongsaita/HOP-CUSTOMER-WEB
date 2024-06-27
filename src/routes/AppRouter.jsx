@@ -6,6 +6,7 @@ import Homepage from "../pages/Homepage";
 import ChatContainer from "../features/chat/components/ChatContainer";
 import ProfileSetting from "../pages/ProfileSetting";
 import ProtectedRoute from "../features/ProtectedRoute";
+import RiderOrder from "../pages/RiderOrder";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
     ),
     children: [
       { path: "/", element: <Homepage /> },
+      { path: "/riderorder", element: <RiderOrder /> },
       { path: "/chat/admin", element: <ChatContainer chatWith="Admin" /> },
       { path: "/chat/rider", element: <ChatContainer /> },
       { path: "/55466", element: <ProfileSetting /> },
