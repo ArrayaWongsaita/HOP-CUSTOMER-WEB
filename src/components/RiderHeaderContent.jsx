@@ -1,6 +1,6 @@
 import CommonButton from "./CommonButton";
 import CommonInput from "./CommonInput";
-import { RiderIcon } from "../icons";
+import { IconRider } from "../icons/IconRider";
 
 const heightContent = {
   popUp: "h-[42%]",
@@ -70,7 +70,7 @@ export default function RiderHeaderContent({
     >
       <div className="h-[100px] flex items-center justify-evenly">
         <div className="border-2 border-torchRed rounded-[14px] h-[85%] aspect-square flex items-center justify-center">
-          <RiderIcon />
+          <IconRider />
         </div>
         <div className=" basis-3/5 text-right text-white text-[32px] font-semibold">
           John Wick

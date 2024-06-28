@@ -1,4 +1,4 @@
-import { PersonImg } from "../icons";
+import { IconPersonImg } from "../icons/IconPersonImg";
 
 export default function ProfileSetting() {
   return (
@@ -11,7 +11,7 @@ export default function ProfileSetting() {
         role="button"
         className="flex items-center justify-center w-[145px] h-[145px] border-[1px] border-[#FF004D] rounded-[16px] mt-[9px]"
       >
-        <PersonImg />
+        <IconPersonImg />
       </div>
 
       <div className="flex items-center justify-between mt-[23px] text w-[165px] text-[20px] font-bold">
