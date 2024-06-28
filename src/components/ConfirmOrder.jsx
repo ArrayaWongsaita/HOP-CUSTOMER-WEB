@@ -2,11 +2,8 @@ import { useEffect, useState, useContext } from "react";
 import CircleButton from "./CircleButton";
 import { ArrowLeft } from "../icons";
 import { CustomerContext } from "../contexts/CustomerContext"; // Import context
-<<<<<<< HEAD
-import LoadScreen from "./LoadScreen";
-=======
+// import LoadScreen from "./LoadScreen";
 import io from "socket.io-client";
->>>>>>> dev
 
 function ConfirmOrder({
   locationA,

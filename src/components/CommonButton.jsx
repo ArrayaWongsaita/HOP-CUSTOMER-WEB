@@ -13,12 +13,8 @@ const widthBtn = {
   regist: "w-[138px]",
   send: "w-[82px]",
   accept: "w-[157px]",
-<<<<<<< HEAD
-  riderStatus: "w-[240px]",
-=======
   close: "w-2/6 max-w-[124px]",
   sendMsg: "w-1/5 max-w-[82px]",
->>>>>>> dev
 };
 
 const heightBtn = {
