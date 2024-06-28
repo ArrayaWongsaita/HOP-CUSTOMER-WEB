@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { LogoHop } from "../icons";
+import { IconLogoHop } from "../icons/IconLogoHop";
 
 const LoadScreen = ({ status, text }) => {
   const [dots, setDots] = useState("");
@@ -16,7 +16,7 @@ const LoadScreen = ({ status, text }) => {
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-[#2E3E6F] from-0% to-[#000000] to-100%">
       <div className="absolute top-1/3 ml-8">
-        <LogoHop />
+        <IconLogoHop />
       </div>
       {text ? (
         <div className="absolute  mt-10 w-full flex items-center justify-center text-center">

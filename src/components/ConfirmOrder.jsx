@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import CircleButton from "./CircleButton";
-import { ArrowLeft } from "../icons";
+import { IconArrowLeft } from "../icons/IconArrowLeft";
 import { CustomerContext } from "../contexts/CustomerContext"; // Import context
 // import LoadScreen from "./LoadScreen";
 import io from "socket.io-client";
@@ -75,7 +75,7 @@ function ConfirmOrder({
           onClick={onBackButtonClick}
         >
           <div className="flex items-center justify-center border-black border-2 min-h-[56px] max-h-[56px] min-w-[56px] max-w-[56px] rounded-full cursor-pointer">
-            <ArrowLeft />
+            <IconArrowLeft />
           </div>
 
           <div className="flex items-center ml-2.5 text-[24px] w-[280px] max-h-[80px] overflow-hidden truncate whitespace-nowrap">
