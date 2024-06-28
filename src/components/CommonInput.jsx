@@ -19,11 +19,13 @@ const borderWidthForStart = {
 const widthCommonInput = {
   places: "w-[317px]",
   text: "w-[204px]",
+  msg: "w-[74%] max-w-[204px]",
 };
 
 const heightCommonInput = {
   places: "h-[70px]",
   text: "h-[60px]",
+  msg: "h-[60%] max-h-[60px]",
 };
 
 const placeholderInput = {
@@ -61,7 +63,7 @@ export default function CommonInput({
   start = "findPlace",
 }) {
   return (
-    <div className="flex">
+    <div className="flex w-auto">
       <div
         className={`bg-white rounded-l-[14px] ${heightCommonInput[height]} w-[70px] font-semibold text-[24px] flex justify-center items-center text-luckyPoint border ${borderColorCommonInput[borderColor]} ${borderWidthForStart[borderWidthStart]}`}
       >

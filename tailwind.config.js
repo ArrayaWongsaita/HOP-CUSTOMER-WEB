@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+
   theme: {
     extend: {
       gridTemplateColumns: {
@@ -15,6 +16,7 @@ export default {
         torchRed: "#ff004d",
         gainsboro: "#dbdbdb",
         corn: "#faef5d",
+        resolutionBlue: "#2e3e6f",
       },
       keyframes: {
         dots: {

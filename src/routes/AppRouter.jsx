@@ -5,12 +5,11 @@ import MainContainer from "../layouts/MainContainer";
 import Homepage from "../pages/Homepage";
 import ChatContainer from "../features/chat/components/ChatContainer";
 import ProfileSetting from "../pages/ProfileSetting";
-import ProtectedRoute from "../features/ProtectedRoute";
-import RiderOrder from "../pages/RiderOrder";
+// import ProtectedRoute from "../features/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
-    path: "/auth/register",
+    path: "/auth/login",
     element: (
       <div className="w-lvw h-lvh bg-black flex justify-center">
         <RegisterAndLoginPage />
@@ -20,13 +19,12 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <ProtectedRoute>
-        <MainContainer />
-      </ProtectedRoute>
+      // <ProtectedRoute>
+      <MainContainer />
+      // </ProtectedRoute>
     ),
     children: [
       { path: "/", element: <Homepage /> },
-      { path: "/riderorder", element: <RiderOrder /> },
       { path: "/chat/admin", element: <ChatContainer chatWith="Admin" /> },
       { path: "/chat/rider", element: <ChatContainer /> },
       { path: "/55466", element: <ProfileSetting /> },
