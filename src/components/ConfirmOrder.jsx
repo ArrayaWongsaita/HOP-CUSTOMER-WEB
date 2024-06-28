@@ -2,14 +2,17 @@ import React, { useEffect, useState, useContext } from "react";
 import CircleButton from "./CircleButton";
 import { ArrowLeft } from "../icons";
 import { CustomerContext } from "../contexts/CustomerContext"; // Import context
+import io from "socket.io-client";
 
-const ConfirmOrder = ({
+function ConfirmOrder({
   locationA,
   locationB,
   duration,
   distance,
   onBackButtonClick,
-}) => {
+}) {
+  const socket = io(import.meta.env.VITE_API_URL);
+
   const [durationInMinutes, setDurationInMinutes] = useState(0);
   const [distanceInKm, setDistanceInKm] = useState(0);
   const { customerUser } = useContext(CustomerContext); // ใช้ useContext เพื่อดึงข้อมูล user
@@ -59,6 +62,8 @@ const ConfirmOrder = ({
     };
 
     console.log("Order:", order);
+
+    socket.emit("createRoute", order);
   };
 
   return (
@@ -123,6 +128,6 @@ const ConfirmOrder = ({
       </div>
     </div>
   );
-};
+}
 
 export default ConfirmOrder;

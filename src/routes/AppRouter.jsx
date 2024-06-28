@@ -20,7 +20,7 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       // <ProtectedRoute>
-        <MainContainer />
+      <MainContainer />
       // </ProtectedRoute>
     ),
     children: [

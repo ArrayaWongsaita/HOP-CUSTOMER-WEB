@@ -1,26 +1,26 @@
-import axios from 'axios';
+import axios from "axios";
 
-import { getAccessToken, removeAccessToken } from '../utils/local-storage';
+import { getAccessToken, removeAccessToken } from "../utils/local-storage";
 
 axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 
 axios.interceptors.request.use(
-  config => {
+  (config) => {
     const accessToken = getAccessToken();
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
     return config;
   },
-  err => Promise.reject(err)
+  (err) => Promise.reject(err)
 );
 
 axios.interceptors.response.use(
-  value => Promise.resolve(value),
-  err => {
+  (value) => Promise.resolve(value),
+  (err) => {
     if (err.response.status === 401) {
       removeAccessToken();
-      window.location.assign('/auth/login');
+      window.location.assign("/auth/login");
       return;
     }
     return Promise.reject(err);
