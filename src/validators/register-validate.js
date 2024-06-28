@@ -27,11 +27,11 @@ const registerSchema = Joi.object({
   }),
   password: Joi.string()
     .required()
-    .pattern(/^[0-9a-zA-Z]{6,}$/)
+    .pattern(/^[0-9a-zA-Z]{8,}$/)
     .messages({
       'string.empty': 'Password is required.',
       'string.pattern.base':
-        'Password must be at least 6 characters and contain only alphabet and number.'
+        'Password must be at least 8 characters and contain only alphabet and number.'
     }),
   confirmPassword: Joi.string().required().valid(Joi.ref('password')).messages({
     'string.empty': 'Confirm password is required.',

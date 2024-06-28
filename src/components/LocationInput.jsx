@@ -2,7 +2,9 @@ import { useState } from "react";
 import LocationList from "./LocationList";
 import LocationPicker from "./LocationPicker";
 import { reverseGeocode } from "../utils/geocodeUtils"; // นำเข้า reverseGeocode
-import { LocationA, LocationB, SearchIcon } from "../icons";
+import { IconLocationA } from "../icons/IconLocationA";
+import { IconLocationB } from "../icons/IconLocationB";
+import { IconSearch} from "../icons/IconSearch";
 
 const LocationInput = ({
   setInputVisible,
@@ -132,7 +134,7 @@ const LocationInput = ({
           {inputVisible && (
             <div className="bg-white flex items-center rounded-md h-[70px] w-[387px] mb-2">
               <div className="flex items-center justify-center ml-2.5  min-h-[44px] max-h-[44px] min-w-[44px] max-w-[44px]">
-                <LocationA />
+                <IconLocationA />
               </div>
               <div className="p-2 flex flex-col flex-grow">
                 <LocationPicker
@@ -151,7 +153,7 @@ const LocationInput = ({
           <button onClick={() => setInputVisible(true)}>
             <div className="bg-white flex items-center rounded-md h-[70px] w-[387px]">
               <div className="flex items-center justify-center ml-2.5 min-h-[44px] max-h-[44px] min-w-[44px] max-w-[44px]">
-                {inputVisible ? <LocationB /> : <SearchIcon />}
+                {inputVisible ? <IconLocationB /> : <IconSearch />}
               </div>
               <div className="p-2 flex flex-col flex-grow">
                 <LocationPicker

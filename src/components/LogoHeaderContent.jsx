@@ -1,4 +1,4 @@
-import { StarIcon } from "../icons";
+import { IconStar } from "../icons/IconStar";
 import CommonButton from "./CommonButton";
 
 const heightContent = {
@@ -14,11 +14,11 @@ const messageContent = {
         How is your journey ?
       </div>
       <div className="flex gap-2">
-        <StarIcon fill="yellow" />
-        <StarIcon fill="yellow" />
-        <StarIcon fill="yellow" />
-        <StarIcon fill="yellow" />
-        <StarIcon />
+        <IconStar fill="yellow" />
+        <IconStar fill="yellow" />
+        <IconStar fill="yellow" />
+        <IconStar fill="yellow" />
+        <IconStar />
       </div>
     </div>
   ),

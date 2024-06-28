@@ -1,4 +1,4 @@
-export function LogoHop() {
+export function IconLogoHop() {
     return (
       <svg
         width="225"
