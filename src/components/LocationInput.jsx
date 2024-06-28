@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import LocationList from "./LocationList";
 import LocationPicker from "./LocationPicker";
 import { reverseGeocode } from "../utils/geocodeUtils"; // นำเข้า reverseGeocode

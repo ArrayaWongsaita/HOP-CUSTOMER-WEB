@@ -18,7 +18,18 @@ export default {
         corn: "#faef5d",
         resolutionBlue: "#2e3e6f",
       },
+      keyframes: {
+        dots: {
+          "0%, 20%": { content: "' '" },
+          "40%": { content: "'.'" },
+          "60%": { content: "'..'" },
+          "80%, 100%": { content: "'...'" },
+        },
+      },
+      animation: {
+        dots: "dots 1.5s steps(1, end) infinite",
+      },
     },
   },
-  plugins: [import("@tailwindcss/line-clamp")],
+  plugins: [require("@tailwindcss/line-clamp")],
 };

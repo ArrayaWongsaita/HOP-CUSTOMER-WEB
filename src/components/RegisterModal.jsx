@@ -1,4 +1,3 @@
-import React from "react";
 import { LogoHop } from "../icons";
 import CommonButton from "./CommonButton";
 
