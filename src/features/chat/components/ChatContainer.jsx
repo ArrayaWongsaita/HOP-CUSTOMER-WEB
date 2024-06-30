@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from "react";
 import socketIOClient from "socket.io-client";
 
@@ -6,17 +7,17 @@ let delaySendMessage = false;
 
 export default function ChatContainer({ chatWith = "Rider" }) {
   const socket = useRef(null); // ใช้ useRef แทนการสร้าง socket ใหม่ในทุกครั้งที่เรนเดอร์
+  const messagesEndRef = useRef(null);
+
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [wasTyping, setWasTyping] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
   const chatId = 1;
 
-  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isTyping]);
+  }, [messages]);
 
   useEffect(() => {
     if (!socket.current) {
@@ -26,22 +27,30 @@ export default function ChatContainer({ chatWith = "Rider" }) {
         setMessages(messages);
       });
       socket.current.on("newMessage", (message) => {
-        console.log(message);
-        setIsTyping(false);
+        setMessages((messages) => 
+          messages.filter((item) => item.senderRole !== "TYPING")
+        );
         setMessages((messages) => [...messages, message]);
       });
 
       socket.current.on("typing", ({ role }) => {
-        if (role !== "USER") {
-          console.log("typing");
-          setIsTyping(true);
-          setTimeout(() => {
-            setIsTyping(false);
-          }, 5000);
-        }
+        if (role !== "USER" ) {
+          setMessages( (messages)=>{
+            const newMessages = messages.filter((item) => item.senderRole !== "TYPING")
+            return [
+              ...newMessages,
+            { senderRole: "TYPING", content: "message" },
+          ]
+        });
+        setTimeout(() => {
+          setMessages((messages) => 
+            messages.filter((item) => item.senderRole !== "TYPING")
+          );
+        }, 5000);
+      }
+  
       });
     }
-
     return () => {
       if (socket.current) {
         socket.current.disconnect();
@@ -102,31 +111,31 @@ export default function ChatContainer({ chatWith = "Rider" }) {
                 msg.senderRole === "USER" ? "justify-end" : "justify-start"
               }`}
             >
-              <div
-                ref={messagesEndRef}
-                className={`bg-white text-2xl p-4 m-3 rounded-tl-2xl  rounded-tr-2xl flex gap-4  ${
-                  msg.senderRole === "USER"
-                    ? "rounded-bl-2xl text-torchRed"
-                    : "rounded-br-2xl"
-                } `}
-              >
-                <h1>{msg.senderRole === "USER" ? "You:" : `${chatWith}:`}</h1>{" "}
-                {msg.content}
-              </div>
+              {msg.senderRole === "TYPING" ? (
+                <div
+                  className={`" bg-white text-2xl p-4 m-3 rounded-tl-2xl  rounded-tr-2xl rounded-br-2xl flex gap-4 `}
+                >
+                  <h1 className="text-[50px] text-black flex items-center px-2 ">
+                    <span className="animate-wave-1 inline-block pr-1">.</span>
+                    <span className="animate-wave-2 inline-block pr-1">.</span>
+                    <span className="animate-wave-3 inline-block pr-1">.</span>
+                  </h1>
+                </div>
+              ) : (
+                <div
+                  ref={messagesEndRef}
+                  className={`bg-white text-2xl p-4 m-3 rounded-tl-2xl  rounded-tr-2xl flex gap-4  ${
+                    msg.senderRole === "USER"
+                      ? "rounded-bl-2xl text-torchRed"
+                      : "rounded-br-2xl"
+                  } `}
+                >
+                  <h1>{msg.senderRole === "USER" ? "You:" : `${chatWith}:`}</h1>{" "}
+                  {msg.content}
+                </div>
+              )}
             </div>
           ))}
-          {isTyping && <div className="h-14"></div>}
-        </div>
-        <div className="relative w-full ">
-          {isTyping && (
-            <div className="absolute -top-[110px] left-7 ">
-              <h1 className="text-[50px] text-white flex ">
-                <span className="animate-wave-1 inline-block pr-1">.</span>
-                <span className="animate-wave-2 inline-block pr-1">.</span>
-                <span className="animate-wave-3 inline-block pr-1">.</span>
-              </h1>
-            </div>
-          )}
         </div>
         <div className=" h-16 w-full mb-5 px-5 flex gap-4 ">
           <div className=" flex-1">
@@ -139,7 +148,10 @@ export default function ChatContainer({ chatWith = "Rider" }) {
               onKeyPress={(e) => (e.key === "Enter" ? sendMessage() : null)}
             />
           </div>
-          <div className="  flex justify-center h-full aspect-[5/4] rounded-xl items-center border-[3px] bg-white  border-torchRed">
+          <div
+            onClick={sendMessage}
+            className="  flex justify-center h-full aspect-[5/4] rounded-xl items-center border-[3px] bg-white  border-torchRed"
+          >
             <h1 className="text-torchRed font-extrabold text-xl ">Send</h1>
           </div>
         </div>
