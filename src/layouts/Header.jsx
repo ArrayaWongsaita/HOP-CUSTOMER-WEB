@@ -1,9 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { IconMenu, LogoHopForNav, Xclose } from "../icons";
 import { useState, useEffect } from "react";
 import "./Header.css";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { IconMenu } from "../icons/IconMenu";
+import { IconLogoHopForNav } from "../icons/IconLogoHopForNav";
+import { IconXClose } from "../icons/IconXClose";
 import useCustomer from "../hooks/customerHook";
 
 export default function Header() {
@@ -12,7 +14,7 @@ export default function Header() {
   const handleClick = () => setClick(!click);
   const closeMobileMenu = () => setClick(false);
   const menuRef = useRef(null);
-  const {logout} = useCustomer()
+  const { logout } = useCustomer()
 
   const handleClickOutside = (event) => {
     if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -29,7 +31,7 @@ export default function Header() {
     };
   }, []);
 
-  const handleTestChat = ()=>{
+  const handleTestChat = () => {
 
     console.log('na')
     closeMobileMenu()
@@ -38,7 +40,7 @@ export default function Header() {
     logout()
     navigate('/auth/login')
     window.location.reload()
-    
+
   }
 
   return (
@@ -46,7 +48,7 @@ export default function Header() {
       <div className="container">
         <div className="header-con">
           <div className="logo-container">
-            <LogoHopForNav width="74" />
+            <IconLogoHopForNav width="74" />
           </div>
 
           <ul className={click ? "menu active" : "menu"}>
@@ -68,7 +70,7 @@ export default function Header() {
           </ul>
 
           <div ref={menuRef} className="mobile-menu" onClick={handleClick}>
-            {click ? <Xclose /> : <IconMenu />}
+            {click ? <IconXClose /> : <IconMenu />}
           </div>
         </div>
       </div>

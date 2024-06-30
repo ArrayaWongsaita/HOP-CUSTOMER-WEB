@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // เพิ่มการใช้ useNavigate
 import RegisterForm from "../features/RegisterForm";
-import { LogoHop } from "../icons";
+import { IconLogoHop } from "../icons/IconLogoHop";
 import LoginForm from "../features/LoginForm";
 import { getAccessToken } from "../utils/local-storage"; // นำเข้า getAccessToken
 
@@ -23,7 +23,7 @@ export default function RegisterAndLoginPage() {
   return (
     <div className="h-[100vh] w-[430px] bg-black">
       <div className="w-[100%] h-[30%] font-extrabold flex justify-center items-center pl-8 pb-9">
-        <LogoHop />
+        <IconLogoHop />
       </div>
       <div className="w-[90%] mx-auto relative z-40 ">
         <div className="w-[100%] flex justify-between absolute top-[-45px] z-20">
