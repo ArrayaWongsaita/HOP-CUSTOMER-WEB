@@ -70,6 +70,11 @@ function ConfirmOrder({
     // navigate("/route");
   };
 
+  const handleAbort = () => {
+    setIsLoading(false); // หยุดการโหลด
+    console.log("cancle order");
+  };
+
   return (
     <div className="">
       <div className="w-full items-center justify-center flex ">
@@ -127,7 +132,9 @@ function ConfirmOrder({
             >
               Confirm
             </CircleButton>
-            {isLoading && <LoadScreen status="Finding a Rider" />}
+            {isLoading && (
+              <LoadScreen status="Finding a Rider" onAbort={handleAbort} />
+            )}
           </div>
         </div>
       </div>

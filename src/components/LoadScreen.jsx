@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import CommonButton from "./CommonButton";
 import { IconLogoHop } from "../icons/IconLogoHop";
 
-const LoadScreen = ({ status, text }) => {
+const LoadScreen = ({ status, text, onAbort }) => {
   const [dots, setDots] = useState("");
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const LoadScreen = ({ status, text }) => {
         )
       )}
       <div className="mt-[350px]">
-        <CommonButton width="accept" fontSize="regist">
+        <CommonButton width="accept" fontSize="regist" onClick={onAbort}>
           abort request
         </CommonButton>
       </div>

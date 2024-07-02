@@ -73,7 +73,7 @@ export default function LogoHeaderContent({
     >
       <div className="flex justify-center items-center h-[23%] pt-4">
         <svg
-          width="100%"
+          width="128px"
           height="100%"
           viewBox="0 0 314 182"
           fill="none"
