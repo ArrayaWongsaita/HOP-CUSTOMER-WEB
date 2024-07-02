@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { IconArrowLeft } from "../icons/IconArrowLeft";
 import { CustomerContext } from "../contexts/CustomerContext"; // Import context
 import io from "socket.io-client";
-import LoadScreen from "./LoadScreen";
 
 function ConfirmOrder({
   locationA,
@@ -14,7 +13,7 @@ function ConfirmOrder({
   onBackButtonClick,
 }) {
   const socket = io(import.meta.env.VITE_API_URL);
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // ใช้ useNavigate สำหรับการนำทาง
   const [durationInMinutes, setDurationInMinutes] = useState(0);
   const [distanceInKm, setDistanceInKm] = useState(0);
   const [isLoading, setIsLoading] = useState(false); // เพิ่ม state สำหรับการโหลด
@@ -67,7 +66,7 @@ function ConfirmOrder({
 
     console.log("Order:", order);
     socket.emit("createRoute", order);
-    // navigate("/route");
+    navigate("/route"); // เพิ่มการนำทางไปยัง "/route"
   };
 
   const handleAbort = () => {
@@ -132,9 +131,6 @@ function ConfirmOrder({
             >
               Confirm
             </CircleButton>
-            {isLoading && (
-              <LoadScreen status="Finding a Rider" onAbort={handleAbort} />
-            )}
           </div>
         </div>
       </div>
