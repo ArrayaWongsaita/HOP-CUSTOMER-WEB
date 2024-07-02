@@ -1,63 +1,106 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
-const TripStatus = ({ svgContent }) => {
-  const [status, setStatus] = useState(1);
-  const [leftPosition, setLeftPosition] = useState(3);
-  const [moveSVG, setMoveSVG] = useState(false);
-  const [time, setTime] = useState(1); // Default time is 1 second
-  const [inputTime, setInputTime] = useState("");
+const TripStatus = ({ svgContent, status, time }) => {
+  const [leftPosition, setLeftPosition] = useState(11);
+  const [circleColors, setCircleColors] = useState([
+    "bg-red-500 text-white",
+    "bg-white text-red-500 border-2 border-red-500",
+    "bg-white text-red-500 border-2 border-red-500",
+    "bg-white text-red-500 border-2 border-red-500",
+  ]);
+
+  const animationFrameId = useRef(null);
+  const startTimeRef = useRef(null);
+
+  const positions = [11, 122, 235, 345];
 
   useEffect(() => {
-    if (moveSVG) {
-      const totalWidth = 84;
-      const stepWidth = totalWidth / 3;
-      const targetPosition = 3 + stepWidth * (status - 1);
+    if (animationFrameId.current) {
+      cancelAnimationFrame(animationFrameId.current);
+    }
 
-      const duration = time * 60000;
-      const startTime = Date.now();
+    const animateToPosition = (targetPosition) => {
+      const duration = time * 1000;
+      startTimeRef.current = Date.now();
 
       const animate = () => {
-        const elapsedTime = Date.now() - startTime;
+        const elapsedTime = Date.now() - startTimeRef.current;
         const progress = Math.min(elapsedTime / duration, 1);
         const newPosition =
           leftPosition + (targetPosition - leftPosition) * progress;
         setLeftPosition(newPosition);
 
         if (progress < 1) {
-          requestAnimationFrame(animate);
-        } else {
-          setMoveSVG(false);
+          animationFrameId.current = requestAnimationFrame(animate);
         }
       };
 
-      requestAnimationFrame(animate);
+      animationFrameId.current = requestAnimationFrame(animate);
+    };
 
-      return () => {
-        // Cleanup if needed
-      };
-    }
-  }, [moveSVG, time, status, leftPosition]);
+    const updatePositionAndColor = () => {
+      switch (status) {
+        case 1:
+          setLeftPosition(positions[0]);
+          setCircleColors([
+            "bg-red-500 text-white",
+            "bg-white text-red-500 border-2 border-red-500",
+            "bg-white text-red-500 border-2 border-red-500",
+            "bg-white text-red-500 border-2 border-red-500",
+          ]);
+          break;
+        case 2:
+          animateToPosition(positions[1]);
+          break;
+        case 3:
+          setLeftPosition(positions[1]);
+          setCircleColors([
+            "bg-red-500 text-white",
+            "bg-red-500 text-white",
+            "bg-white text-red-500 border-2 border-red-500",
+            "bg-white text-red-500 border-2 border-red-500",
+          ]);
+          break;
+        case 4:
+          animateToPosition(positions[2]);
+          setCircleColors([
+            "bg-red-500 text-white",
+            "bg-red-500 text-white",
+            "bg-white text-red-500 border-2 border-red-500",
+            "bg-white text-red-500 border-2 border-red-500",
+          ]);
+          break;
+        case 5:
+          setLeftPosition(positions[2]);
+          setCircleColors([
+            "bg-red-500 text-white",
+            "bg-red-500 text-white",
+            "bg-red-500 text-white",
+            "bg-white text-red-500 border-2 border-red-500",
+          ]);
+          break;
+        case 6:
+          setLeftPosition(positions[3]);
+          setCircleColors([
+            "bg-red-500 text-white",
+            "bg-red-500 text-white",
+            "bg-red-500 text-white",
+            "bg-red-500 text-white",
+          ]);
+          break;
+        default:
+          break;
+      }
+    };
 
-  const handleChangeState = (e) => {
-    e.preventDefault();
-    if (status < 4) {
-      setStatus((prevStatus) => prevStatus + 1);
-      setMoveSVG(true);
-    }
-  };
+    updatePositionAndColor();
 
-  const handleTimeChange = (e) => {
-    setInputTime(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newTime = parseFloat(inputTime);
-    if (!isNaN(newTime) && newTime > 0) {
-      setTime(newTime);
-    }
-    handleChangeState(e);
-  };
+    return () => {
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
+    };
+  }, [status, time]);
 
   const statuses = [
     { id: 1, name: "Start" },
@@ -73,11 +116,7 @@ const TripStatus = ({ svgContent }) => {
           {statuses.map((s, index) => (
             <div key={s.id} className="flex flex-col items-center">
               <div
-                className={`w-16 h-16 rounded-full flex items-center justify-center ${
-                  status >= s.id
-                    ? "bg-red-500 text-white"
-                    : "bg-white text-red-500 border-2 border-red-500"
-                }`}
+                className={`w-16 h-16 rounded-full flex items-center justify-center ${circleColors[index]}`}
               >
                 <span className="text-sm">{s.name}</span>
               </div>
@@ -89,37 +128,15 @@ const TripStatus = ({ svgContent }) => {
           <div className="bg-slate-400">
             <div
               className="absolute transform -translate-y-1/2 w-10 h-10 bg-white rounded-full border border-red-500 flex items-center justify-center"
-              style={{ left: `${leftPosition}%` }}
+              style={{
+                left: `${leftPosition}px`,
+              }}
             >
               {svgContent}
             </div>
           </div>
         </div>
       </div>
-      <form
-        onSubmit={handleSubmit}
-        className="mt-[60px] w-full flex items-center justify-center flex-col"
-      >
-        <div className="bg-white mb-6">
-          <input
-            type="number"
-            placeholder="ระยะเวลาในการเดินทาง (นาที)"
-            value={inputTime}
-            onChange={handleTimeChange}
-            min="0.1"
-            step="0.1"
-          />
-        </div>
-        <div>
-          <button
-            type="submit"
-            className="bg-white mb-6"
-            disabled={status === 4}
-          >
-            เปลี่ยน state
-          </button>
-        </div>
-      </form>
     </div>
   );
 };

@@ -24,8 +24,8 @@ function Homepage() {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const currentLocation = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
+          lat: position.coords.latitude || 13.7583339,
+          lng: position.coords.longitude || 100.5353214,
         };
         // console.log(currentLocation);
         const placeName = await reverseGeocode(

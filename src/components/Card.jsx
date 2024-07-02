@@ -6,7 +6,7 @@ export default function Card({ children }) {
     <div className="flex justify-center">
       <div className=" bg-white w-[84%] h-[110px] flex items-center rounded-[14px] gap-7 justify-center">
         <RiderIcon width="riderCall" />
-        <div className="text-torchRed font-bold border-b-4 border-dotted border-torchRed w-[39%] text-[28px] text-center mb-6">
+        <div className="text-torchRed font-bold border-b-4 border-dotted border-torchRed w-[39%] text-[28px] text-center mb-6 bg-slate-200 ">
           {children}
         </div>
         <IconPerson />

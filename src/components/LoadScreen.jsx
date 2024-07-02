@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
+import CommonButton from "./CommonButton";
 import { IconLogoHop } from "../icons/IconLogoHop";
 
-const LoadScreen = ({ status, text }) => {
+const LoadScreen = ({ status, text, onAbort }) => {
   const [dots, setDots] = useState("");
 
   useEffect(() => {
@@ -19,18 +20,23 @@ const LoadScreen = ({ status, text }) => {
         <IconLogoHop />
       </div>
       {text ? (
-        <div className="absolute  mt-10 w-full flex items-center justify-center text-center">
+        <div className="absolute  mt-5 w-full flex items-center justify-center text-center">
           <p className="text-xl text-center text-white mt-2">{text}</p>
         </div>
       ) : (
         status && (
-          <div className="absolute  mt-10 w-full flex items-center justify-center text-center">
+          <div className="absolute  mt-5 w-full flex items-center justify-center text-center">
             <p className="text-xl text-center text-white mt-2">
               {status} {dots}
             </p>
           </div>
         )
       )}
+      <div className="mt-[350px]">
+        <CommonButton width="accept" fontSize="regist" onClick={onAbort}>
+          abort request
+        </CommonButton>
+      </div>
     </div>
   );
 };
