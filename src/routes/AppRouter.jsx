@@ -27,7 +27,7 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Homepage /> },
       // { path: "/route/:routeId", element: <UserOrder /> },
-      { path: "/route/", element: <UserOrder /> },
+      { path: "/route/:routeId", element: <UserOrder /> },
       { path: "/chat/admin", element: <ChatContainer chatWith="Admin" /> },
       { path: "/chat/rider", element: <ChatContainer /> },
       { path: "/55466", element: <ProfileSetting /> },
