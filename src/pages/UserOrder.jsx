@@ -6,58 +6,59 @@ import RiderPopUp from "../components/RiderPopUp";
 import MapSection from "../components/MapSection";
 import TripStatus from "../components/TripStatus";
 import ModalChatNotification from "../features/Order/components/ModalChatNotification";
+import socketIOClient from "socket.io-client";
+import { useRef } from "react";
 import LoadScreen from "../components/LoadScreen";
 
-const fetchOrder = async () => {
-  return {
-    locationA: {
-      lat: 13.744677,
-      lng: 100.5295593,
-      description:
-        "444 ถ. พญาไท แขวงวังใหม่ เขตปทุมวัน กรุงเทพมหานคร 10330 ประเทศไทย",
-    },
-    locationB: {
-      lat: 13.7465337,
-      lng: 100.5391488,
-      description:
-        "centralwOrld, ถนน พระรามที่ 1 แขวงปทุมวัน เขตปทุมวัน กรุงเทพมหานคร ประเทศไทย",
-    },
-    riderGPS: {
-      lat: 13.7583339,
-      lng: 100.5353214,
-    },
-    status: 1, //ถ้า status = 0 จะโชว์ Loading
-    distanceInKm: 4.9,
-    fare: 49,
-    riderId: 3,
-    riderName: "John Wick",
-    riderProfilePic: "",
-    telRider: "0987654321",
-  };
-};
+const ENDPOINT = import.meta.env.VITE_API_URL;
+
+// const fetchOrder = async () => {
+
+//   return {
+//     locationA: {
+//       lat: 13.744677,
+//       lng: 100.5295593,
+//       description:
+//         "444 ถ. พญาไท แขวงวังใหม่ เขตปทุมวัน กรุงเทพมหานคร 10330 ประเทศไทย",
+//     },
+//     locationB: {
+//       lat: 13.7465337,
+//       lng: 100.5391488,
+//       description:
+//         "centralwOrld, ถนน พระรามที่ 1 แขวงปทุมวัน เขตปทุมวัน กรุงเทพมหานคร ประเทศไทย",
+//     },
+//     riderGPS: {
+//       lat: 13.7583339,
+//       lng: 100.5353214,
+//     },
+//     status: 1,
+//     distanceInKm: 4.9,
+//     fare: 49,
+//     userId: 3,
+//     riderName: "John Wick",
+//     riderProfilePic: "", // แก้ไขเพื่อส่งโปรไฟล์รูปของผู้ขับขี่
+//     telRider: "0987654321",
+//   };
+// };
 
 function UserOrder() {
   const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
   const [order, setOrder] = useState(null);
   const [route, setRoute] = useState(null);
-  const [mapHeight, setMapHeight] = useState("max-h-[455px]");
   const [isModalChatOpen, setIsModalChatOpen] = useState(false);
-  const [durationNumber, setDurationNumber] = useState(0);
   const [isThankYouModalOpen, setIsThankYouModalOpen] = useState(false);
-  const navigate = useNavigate();
+  const [durationNumber, setDurationNumber] = useState(0); // เพิ่ม state สำหรับ durationNumber
+  const navigate = useNavigate(); // ใช้งาน useNavigate
+  const socket = useRef(null);
 
   useEffect(() => {
-    const fetchOrderDetails = async () => {
-      try {
-        const order = await fetchOrder();
-        setOrder(order);
-        setMapHeight(order.mapHeight || "max-h-[455px]");
-      } catch (error) {
-        console.error("Error fetching order details:", error);
-      }
-    };
-
-    fetchOrderDetails();
+    if (!socket.current) {
+      socket.current = socketIOClient(ENDPOINT);
+      socket.current.on("routeHistory", (routeInfo) => {
+        console.log(routeInfo);
+        setOrder(routeInfo);
+      });
+    }
   }, []);
 
   useEffect(() => {

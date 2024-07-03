@@ -1,9 +1,11 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import CircleButton from "./CircleButton";
 import { useNavigate } from "react-router-dom";
 import { IconArrowLeft } from "../icons/IconArrowLeft";
 import { CustomerContext } from "../contexts/CustomerContext"; // Import context
-import io from "socket.io-client";
+import socketIOClient from "socket.io-client";
+
+const ENDPOINT = import.meta.env.VITE_API_URL;
 
 function ConfirmOrder({
   locationA,
@@ -12,12 +14,29 @@ function ConfirmOrder({
   distance,
   onBackButtonClick,
 }) {
-  const socket = io(import.meta.env.VITE_API_URL);
-  const navigate = useNavigate(); // ใช้ useNavigate สำหรับการนำทาง
+  const socket = useRef();
+  const navigate = useNavigate();
+
   const [durationInMinutes, setDurationInMinutes] = useState(0);
   const [distanceInKm, setDistanceInKm] = useState(0);
   const [isLoading, setIsLoading] = useState(false); // เพิ่ม state สำหรับการโหลด
   const { customerUser } = useContext(CustomerContext); // ใช้ useContext เพื่อดึงข้อมูล user
+
+  useEffect(() => {
+    if (!socket.current) {
+      socket.current = socketIOClient(ENDPOINT);
+      socket.on("routeHistory", (newRoute) => {
+        console.log("new route: ", newRoute);
+        navigate(`/customer-url/route/${newRoute.id}`);
+      });
+    }
+    return () => {
+      // Cleanup socket connection
+      if (socket.current) {
+        socket.current.disconnect();
+      }
+    };
+  }, [navigate]);
 
   useEffect(() => {
     const parseDuration = (durationStr) => {
@@ -64,14 +83,8 @@ function ConfirmOrder({
       fare,
     };
 
-    console.log("Order:", order);
-    socket.emit("createRoute", order);
-    navigate("/route"); // เพิ่มการนำทางไปยัง "/route"
-  };
-
-  const handleAbort = () => {
-    setIsLoading(false); // หยุดการโหลด
-    console.log("cancle order");
+    socket.emit("newRoute", order);
+    // navigate("/route");
   };
 
   return (
