@@ -26,9 +26,9 @@ function ConfirmOrder({
   useEffect(() => {
     if (!socket.current) {
       socket.current = socketIOClient(ENDPOINT);
-      socket.on("routeHistory", (newRoute) => {
+      socket.current.on("routeHistory", (newRoute) => {
         console.log("new route: ", newRoute);
-        navigate(`/customer-url/route/${newRoute.id}`);
+        navigate(`/route/${newRoute.id}`);
       });
     }
     return () => {
@@ -83,9 +83,10 @@ function ConfirmOrder({
       durationInMinutes,
       fare,
     };
+    console.log(order)
 
     console.log("Order:", order);
-    socket.emit("newRoute", order);
+    socket.current.emit("newRoute", order);
     // navigate("/route");
   };
 
