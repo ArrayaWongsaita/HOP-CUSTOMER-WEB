@@ -8,10 +8,10 @@ const LocationList = ({
   inputVisible,
 }) => {
   const defaultLocations = [
-    { description: "สถานที่ล่าสุด 1" },
-    { description: "สถานที่ล่าสุด 2" },
-    { description: "สถานที่ล่าสุด 3" },
-    { description: "สถานที่ล่าสุด 4" },
+    { description: "Recent Location 1" },
+    { description: "Recent Location 2" },
+    { description: "Recent Location 3" },
+    { description: "Recent Location 4" },
   ];
 
   const isUsingDefaultLocations = locations.length === 0;
@@ -57,7 +57,7 @@ const LocationList = ({
 
   return (
     <div className="">
-      <div className="mt-2">ตัวเลือกการเดินทาง</div>
+      <div className="mt-2">Travel Options</div>
       <div
         className={`bg-white rounded-lg overflow-y-auto transition-all duration-500 flex flex-col ${
           expanded ? "max-h-[630px]" : "max-h-[296px]"

@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 
-const ModalCommon = ({ children, isOpen }) => {
+const ModalCommon = ({ children, onClose, isOpen }) => {
   return (
     <AnimatePresence>
       {isOpen && (
