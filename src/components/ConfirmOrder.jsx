@@ -1,11 +1,9 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import CircleButton from "./CircleButton";
 import { useNavigate } from "react-router-dom";
 import { IconArrowLeft } from "../icons/IconArrowLeft";
 import { CustomerContext } from "../contexts/CustomerContext"; // Import context
 import socketIOClient from "socket.io-client";
-import LoadScreen from "./LoadScreen";
-import { useRef } from "react";
 
 const ENDPOINT = import.meta.env.VITE_API_URL;
 
@@ -18,6 +16,7 @@ function ConfirmOrder({
 }) {
   const socket = useRef();
   const navigate = useNavigate();
+
   const [durationInMinutes, setDurationInMinutes] = useState(0);
   const [distanceInKm, setDistanceInKm] = useState(0);
   const [isLoading, setIsLoading] = useState(false); // เพิ่ม state สำหรับการโหลด
@@ -84,14 +83,8 @@ function ConfirmOrder({
       fare,
     };
 
-    console.log("Order:", order);
     socket.emit("newRoute", order);
     // navigate("/route");
-  };
-
-  const handleAbort = () => {
-    setIsLoading(false); // หยุดการโหลด
-    console.log("cancel order");
   };
 
   return (
@@ -151,9 +144,6 @@ function ConfirmOrder({
             >
               Confirm
             </CircleButton>
-            {isLoading && (
-              <LoadScreen status="Finding a Rider" onAbort={handleAbort} />
-            )}
           </div>
         </div>
       </div>
