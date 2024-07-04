@@ -6,6 +6,7 @@ import Homepage from "../pages/Homepage";
 import ChatContainer from "../features/chat/components/ChatContainer";
 import ProfileSetting from "../pages/ProfileSetting";
 import UserOrder from "../pages/UserOrder";
+import SocketIoContextProvider from "../contexts/SocketIoContext";
 // import ProtectedRoute from "../features/ProtectedRoute";
 
 const router = createBrowserRouter([
@@ -21,7 +22,9 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       // <ProtectedRoute>
-      <MainContainer />
+      <SocketIoContextProvider>
+        <MainContainer />
+      </SocketIoContextProvider>
       // </ProtectedRoute>
     ),
     children: [
