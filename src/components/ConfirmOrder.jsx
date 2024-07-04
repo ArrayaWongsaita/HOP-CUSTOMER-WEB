@@ -1,11 +1,13 @@
 import { useEffect, useState, useContext, useRef } from "react";
 import CircleButton from "./CircleButton";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { IconArrowLeft } from "../icons/IconArrowLeft";
 import { CustomerContext } from "../contexts/CustomerContext"; // Import context
-import socketIOClient from "socket.io-client";
+import useSocket from "../hooks/socketIoHook";
+import { useNavigate } from "react-router-dom";
+// import socketIOClient from "socket.io-client";
 
-const ENDPOINT = import.meta.env.VITE_API_URL;
+// const ENDPOINT = import.meta.env.VITE_API_URL;
 
 function ConfirmOrder({
   locationA,
@@ -14,29 +16,28 @@ function ConfirmOrder({
   distance,
   onBackButtonClick,
 }) {
-  const socket = useRef();
-  const navigate = useNavigate();
+  // const socket = useRef();
+  // const navigate = useNavigate();
 
+  const {socket,setNewOrder} =useSocket()
+  const navigate = useNavigate(); // ใช้ useNavigate
   const [durationInMinutes, setDurationInMinutes] = useState(0);
   const [distanceInKm, setDistanceInKm] = useState(0);
   const [isLoading, setIsLoading] = useState(false); // เพิ่ม state สำหรับการโหลด
   const { customerUser } = useContext(CustomerContext); // ใช้ useContext เพื่อดึงข้อมูล user
 
   useEffect(() => {
-    if (!socket.current) {
-      socket.current = socketIOClient(ENDPOINT);
-      socket.on("routeHistory", (newRoute) => {
-        console.log("new route: ", newRoute);
-        navigate(`/customer-url/route/${newRoute.id}`);
-      });
-    }
-    return () => {
-      // Cleanup socket connection
-      if (socket.current) {
-        socket.current.disconnect();
-      }
+    const handleRouteHistory = (newRoute) => {
+      setNewOrder(newRoute);
+      navigate(`/route/${newRoute.id}`);
+      socket.off("routeHistory", handleRouteHistory); // ยกเลิกการรับฟังหลังจาก navigate
     };
-  }, [navigate]);
+    socket.on("routeHistory", handleRouteHistory);
+    return () => {
+      socket.off("routeHistory", handleRouteHistory); 
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket]);
 
   useEffect(() => {
     const parseDuration = (durationStr) => {
@@ -82,7 +83,9 @@ function ConfirmOrder({
       durationInMinutes,
       fare,
     };
+    console.log(order)
 
+    console.log("Order:", order);
     socket.emit("newRoute", order);
     // navigate("/route");
   };

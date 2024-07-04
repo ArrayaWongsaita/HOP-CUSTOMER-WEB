@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { LoadScript } from "@react-google-maps/api";
 import { useNavigate } from "react-router-dom";
@@ -6,66 +7,62 @@ import RiderPopUp from "../components/RiderPopUp";
 import MapSection from "../components/MapSection";
 import TripStatus from "../components/TripStatus";
 import ModalChatNotification from "../features/Order/components/ModalChatNotification";
-import socketIOClient from "socket.io-client";
-import { useRef } from "react";
 import LoadScreen from "../components/LoadScreen";
+import useSocket from "../hooks/socketIoHook";
+import { useParams } from "react-router-dom";
 
-const ENDPOINT = import.meta.env.VITE_API_URL;
 
-// const fetchOrder = async () => {
 
-//   return {
-//     locationA: {
-//       lat: 13.744677,
-//       lng: 100.5295593,
-//       description:
-//         "444 ถ. พญาไท แขวงวังใหม่ เขตปทุมวัน กรุงเทพมหานคร 10330 ประเทศไทย",
-//     },
-//     locationB: {
-//       lat: 13.7465337,
-//       lng: 100.5391488,
-//       description:
-//         "centralwOrld, ถนน พระรามที่ 1 แขวงปทุมวัน เขตปทุมวัน กรุงเทพมหานคร ประเทศไทย",
-//     },
-//     riderGPS: {
-//       lat: 13.7583339,
-//       lng: 100.5353214,
-//     },
-//     status: 1,
-//     distanceInKm: 4.9,
-//     fare: 49,
-//     userId: 3,
-//     riderName: "John Wick",
-//     riderProfilePic: "", // แก้ไขเพื่อส่งโปรไฟล์รูปของผู้ขับขี่
-//     telRider: "0987654321",
-//   };
-// };
+
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 function UserOrder() {
-  const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-  const [order, setOrder] = useState(null);
   const [route, setRoute] = useState(null);
   const [isModalChatOpen, setIsModalChatOpen] = useState(false);
   const [isThankYouModalOpen, setIsThankYouModalOpen] = useState(false);
   const [durationNumber, setDurationNumber] = useState(0); // เพิ่ม state สำหรับ durationNumber
   const navigate = useNavigate(); // ใช้งาน useNavigate
-  const socket = useRef(null);
+
+
+  const {socket, order,setNewOrder,setSocketIoClient } = useSocket()
+  const {routeId} = useParams()
+
 
   useEffect(() => {
-    if (!socket.current) {
-      socket.current = socketIOClient(ENDPOINT);
-      socket.current.on("routeHistory", (routeInfo) => {
-        console.log(routeInfo);
-        setOrder(routeInfo);
-      });
+    if (socket) {
+      const handleRouteHistory = (data) => {
+        console.log(data.status)
+        // if (data.status === "PENDING") data.status = 1;
+         if (data.status === "ACCEPTED") data.status = 2;
+        else if (data.status === "GOING") data.status = 3;
+        else if (data.status === "PICKEDUP") data.status = 4;
+        else if (data.status === "OTW") data.status = 5;
+        else if (data.status === "FINISHED") data.status = 6;
+
+        setNewOrder(data);
+      };
+
+      socket.on("routeHistory", handleRouteHistory);
+
+      if (!order) {
+        socket.emit("requestRouteHistory", { routeId });
+      }
+
+      return () => {
+        socket.off("routeHistory", handleRouteHistory);
+      };
+    } else {
+      setSocketIoClient();
     }
-  }, []);
+  }, [socket, routeId, order, setNewOrder, setSocketIoClient]);
+
 
   useEffect(() => {
     if (order) {
       const isGoogleMapsLoaded = window.google && window.google.maps;
       if (isGoogleMapsLoaded) {
         if (order.status === 1 || order.status === 2) {
+          console.log("status1")
           calculateRoute(order.riderGPS, order.locationA);
         } else if (order.status >= 3) {
           calculateRoute(order.locationA, order.locationB);
@@ -75,6 +72,23 @@ function UserOrder() {
   }, [order]);
 
   const calculateRoute = (origin, destination) => {
+    console.log("origin",origin)
+    console.log("defaultLocation",destination)
+    if (!window.google || !window.google.maps) {
+      console.error("Google Maps JavaScript API is not loaded.");
+      setTimeout(() => {
+        window.location.reload()
+      }, 300);
+      return;
+    }
+    if (!origin || !origin.lat || !origin.lng) {
+      console.error("Invalid origin:", origin);
+      return;
+    }
+    if (!destination || !destination.lat || !destination.lng) {
+      console.error("Invalid destination:", destination);
+      return;
+    }
     const directionsService = new window.google.maps.DirectionsService();
     directionsService.route(
       {
@@ -87,6 +101,7 @@ function UserOrder() {
           setRoute(result);
           logTravelTime(result);
         } else {
+          console.log(result)
           console.error(`Error fetching directions ${result}`);
         }
       }
@@ -111,7 +126,7 @@ function UserOrder() {
         setDurationNumber((prevDuration) =>
           prevDuration > 0 ? prevDuration - 1 : 0
         );
-      }, 1000);
+      }, 2000);
 
       return () => clearInterval(timer);
     }
@@ -150,9 +165,13 @@ function UserOrder() {
     }
   }, [order?.status, navigate]);
 
+  const handleAbort = () => {
+    socket.emit("cancelRoute", {routeId})
+  }
+
   return (
     <div className="max-w-[430px] min-w-[430px] h-[862px] relative overflow-hidden">
-      {!order?.status && <LoadScreen status="Finding a Rider" />}
+      {order?.status === "PENDING"  && <LoadScreen onAbort={handleAbort} status="Finding a Rider" button="button"/>}
       <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY} libraries={["places"]}>
         <div>
           <Card>
