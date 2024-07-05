@@ -33,12 +33,14 @@ function UserOrder() {
       const handleRouteHistory = (data) => {
         console.log(data.status)
         // if (data.status === "PENDING") data.status = 1;
-         if (data.status === "ACCEPTED") data.status = 2;
-        else if (data.status === "GOING") data.status = 3;
+         if (data.status === "ACCEPTED") data.status = 1;
+        else if (data.status === "GOING") data.status = 2;
+        else if (data.status === "ARRIVED") data.status = 3;
         else if (data.status === "PICKEDUP") data.status = 4;
         else if (data.status === "OTW") data.status = 5;
+        // else if (data.status === "Dropoff") data.status = 6.5;
         else if (data.status === "FINISHED") data.status = 6;
-
+        // data.status = 4
         setNewOrder(data);
       };
 
@@ -133,6 +135,7 @@ function UserOrder() {
   }, [order?.status, durationNumber]);
 
   const getTimeValue = () => {
+    console.log(durationNumber)
     return durationNumber;
   };
 
