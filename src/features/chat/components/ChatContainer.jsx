@@ -14,7 +14,6 @@ export default function ChatContainer({ chatWith = "Rider" }) {
   const [wasTyping, setWasTyping] = useState(false);
   const chatId = 1;
 
-
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -27,28 +26,29 @@ export default function ChatContainer({ chatWith = "Rider" }) {
         setMessages(messages);
       });
       socket.current.on("newMessage", (message) => {
-        setMessages((messages) => 
+        setMessages((messages) =>
           messages.filter((item) => item.senderRole !== "TYPING")
         );
         setMessages((messages) => [...messages, message]);
       });
 
       socket.current.on("typing", ({ role }) => {
-        if (role !== "USER" ) {
-          setMessages( (messages)=>{
-            const newMessages = messages.filter((item) => item.senderRole !== "TYPING")
+        if (role !== "USER") {
+          setMessages((messages) => {
+            const newMessages = messages.filter(
+              (item) => item.senderRole !== "TYPING"
+            );
             return [
               ...newMessages,
-            { senderRole: "TYPING", content: "message" },
-          ]
-        });
-        setTimeout(() => {
-          setMessages((messages) => 
-            messages.filter((item) => item.senderRole !== "TYPING")
-          );
-        }, 5000);
-      }
-  
+              { senderRole: "TYPING", content: "message" },
+            ];
+          });
+          setTimeout(() => {
+            setMessages((messages) =>
+              messages.filter((item) => item.senderRole !== "TYPING")
+            );
+          }, 5000);
+        }
       });
     }
     return () => {
@@ -70,7 +70,7 @@ export default function ChatContainer({ chatWith = "Rider" }) {
 
   const sendMessage = () => {
     if (message.trim() && !delaySendMessage) {
-      console.log("send");
+      // console.log("send");
       socket.current.emit("sendMessage", {
         chatId,
         senderId: 1,
