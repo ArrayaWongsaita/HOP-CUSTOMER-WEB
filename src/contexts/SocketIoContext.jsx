@@ -18,12 +18,12 @@ export default function SocketIoContextProvider({ children }) {
     const checkRouteRider = async () => {
       try {
         const res = await customerApi.checkCustomerRoute()
-        console.log(res);
+        // console.log(res);
         if (res.data.id) {
           navigate(`/route/${res.data.id}`);
           return 
         }
-        console.log("oK____________")
+        // console.log("oK____________")
       } catch (error) {
         console.log(error);
       }
@@ -39,14 +39,28 @@ export default function SocketIoContextProvider({ children }) {
     });
     setSocket(socketIo);
 
-  }, [navigate]);
-  const setSocketIoClient = ()=>{
-    const socketIo = socketIOClient(ENDPOINT,{
-      auth: {
-        token: getAccessToken()
-      }
+
+    socketIo.on("connect_error", (err) => {
+      console.error("Connection error:", err.message);
     });
-    setSocket(socketIo);
+
+    socketIo.on("error", (err) => {
+      console.error("Socket error:", err.message);
+    });
+    return () => {
+      if (socketIo) {
+        socketIo.disconnect();
+      }
+    };
+
+  }, []);
+  const setSocketIoClient = ()=>{
+    // const socketIo = socketIOClient(ENDPOINT,{
+    //   auth: {
+    //     token: getAccessToken()
+    //   }
+    // });
+    // setSocket(socketIo);
 
   }
 
