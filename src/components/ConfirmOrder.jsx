@@ -66,8 +66,7 @@ function ConfirmOrder({
     const parseDistance = (distanceStr) => {
       return +distanceStr.slice(0, -3);
     };
-
-    setDurationInMinutes(parseDuration(duration));
+    setDurationInMinutes(+duration.slice(0,-4));
     setDistanceInKm(parseDistance(distance));
   }, [duration, distance]);
 
