@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import LocationList from "./LocationList";
 import LocationPicker from "./LocationPicker";
-import { reverseGeocode } from "../utils/geocodeUtils"; // นำเข้า reverseGeocode
+import { reverseGeocode } from "../utils/geocodeUtils";
 import { IconLocationA } from "../icons/IconLocationA";
 import { IconLocationB } from "../icons/IconLocationB";
-import { IconSearch} from "../icons/IconSearch";
+import { IconSearch } from "../icons/IconSearch";
 
 const LocationInput = ({
   setInputVisible,
@@ -15,7 +15,7 @@ const LocationInput = ({
   valueB,
   setValueB,
   setShowConfirmOrder,
-  setValueA, // เพิ่ม setValueA
+  setValueA,
 }) => {
   const [extraVisible, setExtraVisible] = useState(false);
   const [selectedAutocompleteResults, setSelectedAutocompleteResults] =
@@ -23,7 +23,6 @@ const LocationInput = ({
   const [activeInput, setActiveInput] = useState(null);
 
   const handleAutocompleteResults = (results) => {
-    // console.log("Autocomplete results:", results);
     setSelectedAutocompleteResults(results);
   };
 
@@ -32,11 +31,9 @@ const LocationInput = ({
       handleSetLocationA(location);
       handleSetLocationB(null);
       setValueB("");
-      setValueA(location.description || ""); // เพิ่มการตั้งค่า description ให้กับ setValueA
-      // console.log("Selected location A:", location);
+      setValueA(location.description || "");
     } else if (activeInput === "B") {
       handleSetLocationB(location);
-      // console.log("Selected location B:", location);
     }
     setSelectedAutocompleteResults([]);
 
@@ -61,8 +58,6 @@ const LocationInput = ({
     setExtraVisible(true);
     handleSetLocationB(null);
     if (setValueB) setValueB("");
-
-    // console.log("Input visibility toggled:", inputVisible);
   };
 
   const handleBlur = async () => {
@@ -97,7 +92,6 @@ const LocationInput = ({
         setValueA(description);
       }
     } else {
-      // Use GPS location if no selection from autocomplete results
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const currentLocation = {
@@ -109,8 +103,8 @@ const LocationInput = ({
             import.meta.env.VITE_GOOGLE_MAPS_API_KEY
           );
           const location = { ...currentLocation, description: placeName };
-          handleSetLocationA(location); // เรียกใช้ handleSetLocationA สำหรับ GPS location
-          setValueA(placeName); // ใช้ setValueA ที่รับเข้ามา
+          handleSetLocationA(location);
+          setValueA(placeName);
         },
         (error) => {
           console.error("Error getting current location:", error);
@@ -133,7 +127,7 @@ const LocationInput = ({
         <div className="rounded-lg w-[387px]">
           {inputVisible && (
             <div className="bg-white flex items-center rounded-md h-[70px] w-[387px] mb-2">
-              <div className="flex items-center justify-center ml-2.5  min-h-[44px] max-h-[44px] min-w-[44px] max-w-[44px]">
+              <div className="flex items-center justify-center ml-2.5 min-h-[44px] max-h-[44px] min-w-[44px] max-w-[44px]">
                 <IconLocationA />
               </div>
               <div className="p-2 flex flex-col flex-grow">
@@ -145,7 +139,7 @@ const LocationInput = ({
                   onChange={(value) =>
                     handleLocationChangeA({ description: value })
                   }
-                  onBlur={handleBlur} // เพิ่ม onBlur
+                  onBlur={handleBlur}
                 />
               </div>
             </div>
@@ -158,7 +152,7 @@ const LocationInput = ({
               <div className="p-2 flex flex-col flex-grow">
                 <LocationPicker
                   onAutocompleteResults={handleAutocompleteResults}
-                  placeholder="Where to ?"
+                  placeholder="Where to?"
                   onInputFocus={() => setActiveInput("B")}
                   value={valueB}
                   onChange={(value) => {

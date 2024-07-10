@@ -13,6 +13,7 @@ function LocationPicker({
 }) {
   const [address, setAddress] = useState(value || "");
   const autocompleteServiceRef = useRef(null);
+  const inputRef = useRef(null); // เพิ่ม ref สำหรับ input field
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
     libraries,
@@ -46,17 +47,14 @@ function LocationPicker({
     const inputValue = e.target.value;
     setAddress(inputValue);
     onChange(inputValue);
-    // console.log("Input changed:", inputValue);
 
     if (autocompleteServiceRef.current && inputValue.length > 0) {
       autocompleteServiceRef.current.getPlacePredictions(
         { input: inputValue, componentRestrictions: { country: "th" } },
         (predictions, status) => {
           if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            // console.log("Predictions received:", predictions);
             onAutocompleteResults(predictions || []);
           } else {
-            // console.log("No predictions received");
             onAutocompleteResults([]);
           }
         }
@@ -66,16 +64,22 @@ function LocationPicker({
     }
   };
 
+  const handleFocus = (e) => {
+    if (onInputFocus) onInputFocus();
+    e.target.select(); // เลือกข้อความทั้งหมดเมื่อ focus
+  };
+
   return (
     <div
       className="location-picker"
       style={{ position: "relative", zIndex: 1000 }}
     >
       <input
+        ref={inputRef} // ตั้งค่า ref สำหรับ input field
         type="text"
         value={address}
         onChange={handleInputChange}
-        onFocus={onInputFocus}
+        onFocus={handleFocus} // ใช้ handleFocus สำหรับ onFocus event
         onBlur={onBlur}
         placeholder={placeholder}
         className="p-2 rounded w-full"

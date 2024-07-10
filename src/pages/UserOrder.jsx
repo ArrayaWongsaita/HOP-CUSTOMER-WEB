@@ -11,9 +11,6 @@ import LoadScreen from "../components/LoadScreen";
 import useSocket from "../hooks/socketIoHook";
 import { useParams } from "react-router-dom";
 
-
-
-
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 function UserOrder() {
@@ -23,17 +20,15 @@ function UserOrder() {
   const [durationNumber, setDurationNumber] = useState(0); // เพิ่ม state สำหรับ durationNumber
   const navigate = useNavigate(); // ใช้งาน useNavigate
 
-
-  const {socket, order,setNewOrder,setSocketIoClient } = useSocket()
-  const {routeId} = useParams()
-
+  const { socket, order, setNewOrder, setSocketIoClient } = useSocket();
+  const { routeId } = useParams();
 
   useEffect(() => {
     if (socket) {
       const handleRouteHistory = (data) => {
-        console.log(data.status)
+        console.log(data.status);
         // if (data.status === "PENDING") data.status = 1;
-         if (data.status === "ACCEPTED") data.status = 1;
+        if (data.status === "ACCEPTED") data.status = 1;
         else if (data.status === "GOING") data.status = 2;
         else if (data.status === "ARRIVED") data.status = 3;
         else if (data.status === "PICKEDUP") data.status = 4;
@@ -58,13 +53,12 @@ function UserOrder() {
     }
   }, [socket, routeId, order, setNewOrder, setSocketIoClient]);
 
-
   useEffect(() => {
     if (order) {
       const isGoogleMapsLoaded = window.google && window.google.maps;
       if (isGoogleMapsLoaded) {
         if (order.status === 1 || order.status === 2) {
-          console.log("status1")
+          console.log("status1");
           calculateRoute(order.riderGPS, order.locationA);
         } else if (order.status >= 3) {
           calculateRoute(order.locationA, order.locationB);
@@ -74,12 +68,12 @@ function UserOrder() {
   }, [order]);
 
   const calculateRoute = (origin, destination) => {
-    console.log("origin",origin)
-    console.log("defaultLocation",destination)
+    console.log("origin", origin);
+    console.log("defaultLocation", destination);
     if (!window.google || !window.google.maps) {
       console.error("Google Maps JavaScript API is not loaded.");
       setTimeout(() => {
-        window.location.reload()
+        window.location.reload();
       }, 300);
       return;
     }
@@ -103,7 +97,7 @@ function UserOrder() {
           setRoute(result);
           logTravelTime(result);
         } else {
-          console.log(result)
+          console.log(result);
           console.error(`Error fetching directions ${result}`);
         }
       }
@@ -135,7 +129,7 @@ function UserOrder() {
   }, [order?.status, durationNumber]);
 
   const getTimeValue = () => {
-    console.log(durationNumber)
+    console.log(durationNumber);
     return durationNumber;
   };
 
@@ -169,12 +163,18 @@ function UserOrder() {
   }, [order?.status, navigate]);
 
   const handleAbort = () => {
-    socket.emit("cancelRoute", {routeId})
-  }
+    socket.emit("cancelRoute", { routeId });
+  };
 
   return (
     <div className="max-w-[430px] min-w-[430px] h-[862px] relative overflow-hidden">
-      {order?.status === "PENDING"  && <LoadScreen onAbort={handleAbort} status="Finding a Rider" button="button"/>}
+      {order?.status === "PENDING" && (
+        <LoadScreen
+          onAbort={handleAbort}
+          status="Finding a Rider"
+          button="button"
+        />
+      )}
       <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY} libraries={["places"]}>
         <div>
           <Card>
