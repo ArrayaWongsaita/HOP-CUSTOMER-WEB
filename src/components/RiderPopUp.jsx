@@ -1,3 +1,4 @@
+import AdminIcon from "../icons/AdminIcon";
 import { IconCall } from "../icons/IconCall";
 import { IconChat } from "../icons/IconChat";
 import { IconRider } from "../icons/IconRider";
@@ -5,13 +6,10 @@ import { IconRider } from "../icons/IconRider";
 export default function RiderPopUp({
   riderName,
   riderProfilePic,
-  telRider,
   onChatClick,
+  onClickChatAdmin,
+  onClickTelUser,
 }) {
-  const handleCallClick = () => {
-    alert(telRider);
-  };
-
   return (
     <div className="border-4 border-white w-screen h-[150px] rounded-[14px] flex items-center justify-center px-2">
       <div className="w-[35%] flex justify-center items-center h-full">
@@ -33,12 +31,15 @@ export default function RiderPopUp({
           {riderName}
         </div>
         <div className="flex justify-evenly">
-          <div onClick={handleCallClick}>
+          <div onClick={onClickTelUser}>
             <IconCall />
           </div>
           <div onClick={onChatClick}>
             <IconChat />
           </div>
+          <dev onClick={onClickChatAdmin}>
+            <AdminIcon />
+          </dev>
         </div>
       </div>
     </div>

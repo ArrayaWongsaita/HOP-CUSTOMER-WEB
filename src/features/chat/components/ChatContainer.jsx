@@ -9,7 +9,7 @@ export default function ChatContainer({
   socket,
   chatId,
   closeChat,
-  senderId
+  senderId,
 }) {
   const messagesEndRef = useRef(null);
   const [wasTyping, setWasTyping] = useState(false);
@@ -57,7 +57,7 @@ export default function ChatContainer({
             </div>
           </div>
           <div className="flex-1 flex justify-center py-5">
-            <h1 className="text-white text-3xl">John Wick</h1>
+            <h1 className="text-white text-3xl">{chatWith}</h1>
           </div>
           <div className="px-2 py-3 text-center">
             <h1
