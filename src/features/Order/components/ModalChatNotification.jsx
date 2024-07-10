@@ -1,5 +1,4 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom"; // import useNavigate
 import { IconRider } from "../../../icons/IconRider";
 import CommonButton from "../../../components/CommonButton";
 
@@ -8,6 +7,8 @@ const ModalChatNotification = ({
   isOpen,
   riderName,
   riderProfilePic,
+  message,
+  openChat
 }) => {
   // ฟังก์ชันสำหรับปิดโมดอล
   const handleClose = () => {
@@ -16,17 +17,18 @@ const ModalChatNotification = ({
     }
   };
 
-  const navigate = useNavigate(); // ใช้งาน useNavigate
+
   // ฟังก์ชันสำหรับการนำทางไปที่ Google
   const handleReply = () => {
-    navigate("/chat/rider");
+    onClose();
+    openChat()
   };
 
   return (
     <AnimatePresence>
       {isOpen && (
         <>
-          <div className="fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-r from-[#516293] from-0% to-[#1D2B53] to-100%"></div>
+          <div className="fixed inset-0 flex flex-col items-center justify-center "></div>
           <motion.div
             className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
             initial={{ opacity: 0 }}
@@ -34,12 +36,12 @@ const ModalChatNotification = ({
             exit={{ opacity: 0, transition: { duration: 0.2 } }} // ปรับระยะเวลาในการปิด
           >
             <motion.div
-              className="p-4 rounded-2xl border-[4px] min-w-full m-16 flex flex-col items-center min-h-[400px] justify-between text-white"
+              className="p-4 rounded-2xl bg-gradient-to-r from-[#516293] from-0% to-[#1D2B53] to-100% border-[4px] min-w-full m-16 flex flex-col items-center min-h-[400px] justify-between text-white"
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.8, transition: { duration: 0.2 } }} // ปรับระยะเวลาในการปิด
             >
-              <div className="flex w-full items-center">
+              <div className=" flex w-full items-center">
                 {riderProfilePic ? (
                   <img
                     src={riderProfilePic}
@@ -56,7 +58,7 @@ const ModalChatNotification = ({
               <div className="bg-white rounded-2xl w-[90%] h-[60px] text-black flex items-center justify-center">
                 <div className="m-2 flex items-center h-full w-full space-x-2 overflow-hidden">
                   <div>rider:</div>
-                  <div className="truncate">{`message`}</div>
+                  <div className="truncate">{message}</div>
                 </div>
               </div>
               <div className="flex justify-around w-full">

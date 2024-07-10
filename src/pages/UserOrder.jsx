@@ -10,8 +10,10 @@ import ModalChatNotification from "../features/Order/components/ModalChatNotific
 import LoadScreen from "../components/LoadScreen";
 import useSocket from "../hooks/socketIoHook";
 import { useParams } from "react-router-dom";
+import ChatContainer from "../features/chat/components/ChatContainer";
 
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+let chatOpen = false;
 
 function UserOrder() {
   const [route, setRoute] = useState(null);
@@ -20,38 +22,119 @@ function UserOrder() {
   const [durationNumber, setDurationNumber] = useState(0); // เพิ่ม state สำหรับ durationNumber
   const navigate = useNavigate(); // ใช้งาน useNavigate
 
+  const [chatId, setChatId] = useState(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [messages, setMessages] = useState([]);
+
   const { socket, order, setNewOrder, setSocketIoClient } = useSocket();
   const { routeId } = useParams();
+
+  // if(socket){
+  //   if (order?.status !== "PENDING") {
+  //     if(!chatId || !order){
+  //       console.log("getChat and order----------------")
+  //       socket.emit("requestRouteHistory", { routeId });
+  //     }
+  //   }
+  // }
 
   useEffect(() => {
     if (socket) {
       const handleRouteHistory = (data) => {
         console.log(data.status);
-        // if (data.status === "PENDING") data.status = 1;
+        if (data.status === "PENDING" && data?.chatInfo) {
+          console.log("bug----------!!!!!!!!!!!!!!!!!");
+          return;
+        }
+
+        if (data?.chatInfo) {
+          console.log(
+            data.chatInfo,
+            "chat---------------------------------------"
+          );
+          setChatId(data.chatInfo.id);
+          socket.emit("joinChat", { chatId: data.chatInfo.id });
+        }
         if (data.status === "ACCEPTED") data.status = 1;
-        else if (data.status === "GOING") data.status = 2;
+        else if (data.status === "PICKINGUP") data.status = 2;
         else if (data.status === "ARRIVED") data.status = 3;
         else if (data.status === "PICKEDUP") data.status = 4;
-        else if (data.status === "OTW") data.status = 5;
-        // else if (data.status === "Dropoff") data.status = 6.5;
+        else if (data.status === "DELIVERING") data.status = 5;
         else if (data.status === "FINISHED") data.status = 6;
-        // data.status = 4
         setNewOrder(data);
       };
 
       socket.on("routeHistory", handleRouteHistory);
 
-      if (!order) {
+      if (!order || !chatId) {
         socket.emit("requestRouteHistory", { routeId });
       }
-
       return () => {
         socket.off("routeHistory", handleRouteHistory);
       };
     } else {
       setSocketIoClient();
     }
-  }, [socket, routeId, order, setNewOrder, setSocketIoClient]);
+  }, [socket]);
+
+  // ---------- chat -------------------
+  useEffect(() => {
+    if (socket && chatId) {
+      const handleChatHistory = (messages) => {
+        setMessages(messages);
+      };
+      const handleNewMessage = (message) => {
+        if (!chatOpen) {
+          setIsModalChatOpen(true);
+        }
+        setMessages((messages) =>
+          messages.filter((item) => item.senderRole !== "TYPING")
+        );
+        setMessages((messages) => [...messages, message]);
+      };
+      const handleTyping = ({ role }) => {
+        if (role !== "USER") {
+          setMessages((messages) => {
+            const newMessages = messages.filter(
+              (item) => item.senderRole !== "TYPING"
+            );
+            return [
+              ...newMessages,
+              { senderRole: "TYPING", content: "message" },
+            ];
+          });
+          setTimeout(() => {
+            setMessages((messages) =>
+              messages.filter((item) => item.senderRole !== "TYPING")
+            );
+          }, 5000);
+        }
+      };
+
+      console.log("--------------------------joinChat", chatId);
+      socket.emit("joinChat", { chatId });
+      socket.on("chatHistory", handleChatHistory);
+      socket.on("newMessage", handleNewMessage);
+      socket.on("typing", handleTyping);
+
+      return () => {
+        socket.off("chatHistory", handleChatHistory);
+        socket.off("newMessage", handleNewMessage);
+        socket.off("typing", handleTyping);
+      };
+    }
+  }, [chatId, socket]);
+
+  const handleChatClick = () => {
+    setIsChatOpen((isChatOpen) => !isChatOpen);
+    chatOpen = true;
+  };
+  const handleChatClose = () => {
+    setIsChatOpen(false);
+    chatOpen = false;
+  };
+
+  // ----------end chat -------------------
 
   useEffect(() => {
     if (order) {
@@ -129,7 +212,6 @@ function UserOrder() {
   }, [order?.status, durationNumber]);
 
   const getTimeValue = () => {
-    console.log(durationNumber);
     return durationNumber;
   };
 
@@ -146,10 +228,6 @@ function UserOrder() {
     return durationNumber > 0 ? `${durationNumber} Mins` : "Almost there";
   };
 
-  const handleChatClick = () => {
-    navigate("/chat/rider");
-  };
-
   useEffect(() => {
     if (order?.status === 6) {
       setTimeout(() => {
@@ -157,6 +235,8 @@ function UserOrder() {
       }, 1000); // 3 วินาที (3000 มิลลิวินาที)
       setTimeout(() => {
         setIsThankYouModalOpen(false);
+        socket.emit("leaveRoute", { routeId });
+        socket.emit("leaveChat", { chatId });
         navigate("/");
       }, 3000); //
     }
@@ -167,54 +247,73 @@ function UserOrder() {
   };
 
   return (
-    <div className="max-w-[430px] min-w-[430px] h-[862px] relative overflow-hidden">
-      {order?.status === "PENDING" && (
-        <LoadScreen
-          onAbort={handleAbort}
-          status="Finding a Rider"
-          button="button"
-        />
-      )}
-      <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY} libraries={["places"]}>
-        <div>
-          <Card>
-            <div className="text-[24px]">{getStatusMessage()}</div>
-          </Card>
-        </div>
-        <div className="mt-2">
-          <MapSection route={route} height="h-[450px]" />
-        </div>
-        <div className="mt-2">
-          {order && (
-            <RiderPopUp
-              riderName={order.riderName}
-              riderProfilePic={order.riderProfilePic}
-              telRider={order.telRider}
-              onChatClick={handleChatClick}
-            />
-          )}
-        </div>
-        <div>
-          {order && <TripStatus status={order.status} time={getTimeValue()} />}
-        </div>
-        <div className="mt-2"></div>
-      </LoadScript>
-      {order && (
-        <ModalChatNotification
-          isOpen={isModalChatOpen}
-          onClose={() => setIsModalChatOpen(false)}
-          riderName={order.riderName}
-          riderProfilePic={order.riderProfilePic}
-        />
-      )}
-      {order?.status === 6 &&
-        isThankYouModalOpen && ( // ตรวจสอบว่า status เท่ากับ 6 และ isThankYouModalOpen เป็น true
+    <>
+      <div className=" w-full h-full overflow-hidden">
+        {order?.status === "PENDING" && (
           <LoadScreen
-            isOpen={isThankYouModalOpen}
-            text="Thank you for using our service"
+            onAbort={handleAbort}
+            status="Finding a Rider"
+            button="button"
           />
         )}
-    </div>
+        {isChatOpen && (
+          <ChatContainer
+            messages={messages}
+            socket={socket}
+            chatId={chatId}
+            closeChat={handleChatClose}
+            senderId={order.userId}
+          />
+        )}
+        <LoadScript
+          googleMapsApiKey={GOOGLE_MAPS_API_KEY}
+          libraries={["places"]}
+        >
+          <div>
+            <Card>
+              <div className="text-[24px]">{getStatusMessage()}</div>
+            </Card>
+          </div>
+          <div className="mt-2">
+            <MapSection route={route} height="h-[450px]" />
+          </div>
+          <div className="mt-2">
+            {order && (
+              <RiderPopUp
+                riderName={order.riderName}
+                riderProfilePic={order.riderProfilePic}
+                telRider={order.telRider}
+                onChatClick={handleChatClick}
+              />
+            )}
+          </div>
+          <div className="">
+            {order && (
+              <TripStatus status={order.status} time={getTimeValue()} />
+            )}
+          </div>
+          <div className="mt-2"></div>
+        </LoadScript>
+
+        {order && (
+          <ModalChatNotification
+            isOpen={isModalChatOpen}
+            openChat={handleChatClick}
+            onClose={() => setIsModalChatOpen(false)}
+            message={messages[messages.length - 1]?.content}
+            riderName={order.riderName}
+            riderProfilePic={order.riderProfilePic}
+          />
+        )}
+        {order?.status === 6 &&
+          isThankYouModalOpen && ( // ตรวจสอบว่า status เท่ากับ 6 และ isThankYouModalOpen เป็น true
+            <LoadScreen
+              isOpen={isThankYouModalOpen}
+              text="Thank you for using our service"
+            />
+          )}
+      </div>
+    </>
   );
 }
 

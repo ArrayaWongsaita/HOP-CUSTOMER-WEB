@@ -8,11 +8,30 @@ const TripStatus = ({ svgContent, status, time }) => {
     "bg-white text-red-500 border-2 border-red-500",
     "bg-white text-red-500 border-2 border-red-500",
   ]);
+  const [positions, setPositions] = useState([11, 122, 235, 345]);
 
   const animationFrameId = useRef(null);
   const startTimeRef = useRef(null);
 
-  const positions = [11, 122, 235, 345];
+  useEffect(() => {
+    const updatePositions = () => {
+      const width = window.innerWidth;
+      const newPositions = [
+        width * 0.025, // 2.5% ของความกว้างหน้าจอ
+        width * 0.3,   // 30% ของความกว้างหน้าจอ
+        width * 0.55,  // 55% ของความกว้างหน้าจอ
+        width * 0.8    // 80% ของความกว้างหน้าจอ
+      ];
+      setPositions(newPositions);
+    };
+
+    updatePositions();
+    window.addEventListener('resize', updatePositions);
+
+    return () => {
+      window.removeEventListener('resize', updatePositions);
+    };
+  }, []);
 
   useEffect(() => {
     if (animationFrameId.current) {
@@ -100,7 +119,7 @@ const TripStatus = ({ svgContent, status, time }) => {
         cancelAnimationFrame(animationFrameId.current);
       }
     };
-  }, [status, time]);
+  }, [status, time, positions]);
 
   const statuses = [
     { id: 1, name: "Start" },
