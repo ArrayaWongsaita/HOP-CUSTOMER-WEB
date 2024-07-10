@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { LoadScript } from "@react-google-maps/api";
 import { useNavigate } from "react-router-dom";
 import Card from "../components/Card";
@@ -11,6 +11,8 @@ import LoadScreen from "../components/LoadScreen";
 import useSocket from "../hooks/socketIoHook";
 import { useParams } from "react-router-dom";
 import ChatContainer from "../features/chat/components/ChatContainer";
+import ModalCommon from "../components/ModalCommon";
+import CommonButton from "../components/CommonButton";
 
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 let chatOpen = false;
@@ -28,6 +30,8 @@ function UserOrder() {
 
   const { socket, order, setNewOrder, setSocketIoClient } = useSocket();
   const { routeId } = useParams();
+  const [modalTelephone, setModalTelephone] = useState(false);
+  const [isChatAdminOpen, setIsChatAdminOpen] = useState(false);
 
   // if(socket){
   //   if (order?.status !== "PENDING") {
@@ -245,7 +249,24 @@ function UserOrder() {
   const handleAbort = () => {
     socket.emit("cancelRoute", { routeId });
   };
+  const handleModalTelClose = useCallback((confirmedTel) => {
+    setModalTelephone(false);
+    if (confirmedTel) {
+      window.location.href = "tel:+6601234567"; // หมายเลขโทรศัพท์ที่ต้องการโทรออก
+    }
+  }, []);
 
+  const handleChatAdminClick = () => {
+    setIsChatAdminOpen(true);
+    chatOpen = true;
+  };
+  const handleChatAdminClose = () => {
+    setIsChatAdminOpen(false);
+    chatOpen = false;
+  };
+  const handleButtonTelClick = useCallback(() => {
+    setModalTelephone(true);
+  }, []);
   return (
     <>
       <div className=" w-full h-full overflow-hidden">
@@ -265,6 +286,16 @@ function UserOrder() {
             senderId={order.userId}
           />
         )}
+        {isChatAdminOpen && (
+          <ChatContainer
+            messages={messages}
+            socket={socket}
+            chatId={chatId}
+            closeChat={handleChatAdminClose}
+            senderId={order.riderId}
+            chatWith="Admin"
+          />
+        )}
         <LoadScript
           googleMapsApiKey={GOOGLE_MAPS_API_KEY}
           libraries={["places"]}
@@ -282,8 +313,10 @@ function UserOrder() {
               <RiderPopUp
                 riderName={order.riderName}
                 riderProfilePic={order.riderProfilePic}
-                telRider={order.telRider}
+                telRider={order?.telRider}
                 onChatClick={handleChatClick}
+                onClickChatAdmin={handleChatAdminClick}
+                onClickTelUser={handleButtonTelClick}
               />
             )}
           </div>
@@ -305,6 +338,20 @@ function UserOrder() {
             riderProfilePic={order.riderProfilePic}
           />
         )}
+        <ModalCommon
+          isOpen={modalTelephone}
+          onClose={() => handleModalTelClose(false)}
+        >
+          <p>{`tel ${order?.telRider}`}</p>
+          <div className="flex w-full items-center justify-between">
+            <CommonButton onClick={() => handleModalTelClose(true)}>
+              Yes
+            </CommonButton>
+            <CommonButton onClick={() => handleModalTelClose(false)}>
+              No
+            </CommonButton>
+          </div>
+        </ModalCommon>
         {order?.status === 6 &&
           isThankYouModalOpen && ( // ตรวจสอบว่า status เท่ากับ 6 และ isThankYouModalOpen เป็น true
             <LoadScreen
