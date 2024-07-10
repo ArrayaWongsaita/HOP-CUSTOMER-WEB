@@ -45,11 +45,38 @@ export default function CustomerContextProvider({ children }) {
     setCustomerUser(null);
   };
 
+  const updateName = async (firstName, lastName) => {
+    try {
+      const res = await customerApi.updateCustomerProfile({
+        firstName,
+        lastName,
+      });
+      setCustomerUser((prev) => ({ ...prev, ...res.data.user }));
+    } catch (err) {
+      throw new Error("Failed to update name");
+    }
+  };
+
+  const updatePassword = async (currentPassword, newPassword) => {
+    try {
+      const res = await customerApi.updateCustomerProfile({
+        currentPassword,
+        newPassword,
+      });
+      setCustomerUser((prev) => ({ ...prev, ...res.data.user }));
+    } catch (err) {
+      throw new Error("Fail to update password");
+    }
+  };
+
   const value = {
     customerUser,
     isCustomerUserLoading,
     login,
     logout,
+    // updateCusProfile,
+    updateName,
+    updatePassword,
   };
 
   return (

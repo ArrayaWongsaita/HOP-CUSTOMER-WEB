@@ -52,11 +52,13 @@ export default function CommonButton({
   borderWidth = "common",
   fontSize = "reply",
   onClick,
+  type,
 }) {
   return (
     <button
       className={`${bgBtn[bg]} ${textBtn[text]} ${widthBtn[width]} ${heightBtn[height]} border ${borderWidthBtn[borderWidth]} ${borderColorBtn[borderColor]} rounded-[14px] px-1 py-1.5 ${fontSizeBtn[fontSize]} font-semibold`}
       onClick={onClick} // เพิ่ม onClick ที่นี่
+      type={type}
     >
       {children}
     </button>
