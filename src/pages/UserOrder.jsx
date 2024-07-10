@@ -20,6 +20,7 @@ function UserOrder() {
   const [isModalChatOpen, setIsModalChatOpen] = useState(false);
   const [isThankYouModalOpen, setIsThankYouModalOpen] = useState(false);
   const [durationNumber, setDurationNumber] = useState(0); // เพิ่ม state สำหรับ durationNumber
+  const [riderInfo, setRiderInfo] = useState(null)
   const navigate = useNavigate(); // ใช้งาน useNavigate
   
   
@@ -48,7 +49,10 @@ function UserOrder() {
           console.log("bug----------!!!!!!!!!!!!!!!!!")
           return
         }
-
+        if(data.riderInfo){
+          console.log("set rider info",data.riderInfo)
+          setRiderInfo(data.riderInfo)
+        }
         if (data?.chatInfo) {
           console.log(data.chatInfo, "chat---------------------------------------");
           setChatId(data.chatInfo.id);
@@ -266,7 +270,7 @@ useEffect(() => {
         button="button"
         />
       )}
-      {isChatOpen && <ChatContainer messages={messages} socket={socket} chatId={chatId} closeChat={handleChatClose} senderId={order.userId} />}
+      {isChatOpen && <ChatContainer chatWithInfo={riderInfo} messages={messages} socket={socket} chatId={chatId} closeChat={handleChatClose} senderId={order.userId}  />}
       <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY} libraries={["places"]}>
         <div >
           <Card>
