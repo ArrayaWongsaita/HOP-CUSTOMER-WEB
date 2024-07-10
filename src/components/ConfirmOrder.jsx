@@ -19,7 +19,7 @@ function ConfirmOrder({
   // const socket = useRef();
   // const navigate = useNavigate();
 
-  const {socket,setNewOrder} =useSocket()
+  const { socket, setNewOrder } = useSocket();
   const navigate = useNavigate(); // ใช้ useNavigate
   const [durationInMinutes, setDurationInMinutes] = useState(0);
   const [distanceInKm, setDistanceInKm] = useState(0);
@@ -34,9 +34,9 @@ function ConfirmOrder({
     };
     socket.on("routeHistory", handleRouteHistory);
     return () => {
-      socket.off("routeHistory", handleRouteHistory); 
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+      socket.off("routeHistory", handleRouteHistory);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
 
   useEffect(() => {
@@ -66,7 +66,7 @@ function ConfirmOrder({
     const parseDistance = (distanceStr) => {
       return +distanceStr.slice(0, -3);
     };
-    setDurationInMinutes(+duration.slice(0,-4));
+    setDurationInMinutes(+duration.slice(0, -4));
     setDistanceInKm(parseDistance(distance));
   }, [duration, distance]);
 
@@ -82,7 +82,7 @@ function ConfirmOrder({
       durationInMinutes,
       fare,
     };
-    console.log(order)
+    console.log(order);
 
     console.log("Order:", order);
     socket.emit("newRoute", order);

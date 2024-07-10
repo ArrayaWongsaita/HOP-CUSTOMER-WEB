@@ -31,7 +31,7 @@ const LocationInput = ({
       handleSetLocationA(location);
       handleSetLocationB(null);
       setValueB("");
-      setValueA(location.description || "");
+      setValueA(location?.description || "");
     } else if (activeInput === "B") {
       handleSetLocationB(location);
     }
@@ -73,7 +73,7 @@ const LocationInput = ({
               description: results[0].formatted_address,
             };
             handleSelectLocation(detailedLocation);
-            setValueA(detailedLocation.description);
+            setValueA(detailedLocation?.description);
           } else {
             console.error(
               "Geocode was not successful for the following reason:",
