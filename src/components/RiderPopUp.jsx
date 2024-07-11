@@ -9,17 +9,18 @@ export default function RiderPopUp({
   onChatClick,
   onClickChatAdmin,
   onClickTelUser,
+  
 }) {
   return (
     <div className="border-4 border-white w-screen h-[150px] rounded-[14px] flex items-center justify-center px-2">
       <div className="w-[35%] flex justify-center items-center h-full">
-        <div className="border-[3px] border-torchRed rounded-[14px] min-h-[80px] min-w-[80px] max-h-[80px] max-w-[80px] flex items-center justify-center">
+        <div className="border-[3px] border-torchRed rounded-[14px] min-h-[80px] min-w-[80px] max-h-[80px] max-w-[80px] flex items-center justify-center overflow-hidden">
           {/* แสดงโปรไฟล์ของผู้ขับขี่ */}
           {riderProfilePic ? (
             <img
               src={riderProfilePic}
               alt={riderName}
-              className="rounded-full h-full"
+              className=" h-full"
             />
           ) : (
             <IconRider width="riderCall" />

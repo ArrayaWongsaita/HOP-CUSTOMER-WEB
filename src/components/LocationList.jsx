@@ -1,3 +1,4 @@
+import useCustomer from "../hooks/customerHook";
 import { IconLocation } from "../icons/IconLocation";
 import { IconTime } from "../icons/IconTime";
 
@@ -5,15 +6,19 @@ const LocationList = ({
   locations,
   expanded,
   onSelectLocation,
-  inputVisible,
+  // inputVisible,
+  
 }) => {
-  const defaultLocations = [
-    { description: "Recent Location 1" },
-    { description: "Recent Location 2" },
-    { description: "Recent Location 3" },
-    { description: "Recent Location 4" },
-  ];
-
+  
+  const { routeHistory } = useCustomer()
+  
+const  defaultLocations = routeHistory.map(item => ({ description:item.desPlace}))
+  // defaultLocations = [
+  //   { description: "Recent Location 1" },
+  //   { description: "Recent Location 2" },
+  //   { description: "Recent Location 3" },
+  //   { description: "Recent Location 4" },
+  // ]
   const isUsingDefaultLocations = locations.length === 0;
 
   const handleSelectLocation = async (location) => {
