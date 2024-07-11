@@ -311,8 +311,8 @@ function UserOrder() {
           <div className="mt-2">
             {order && (
               <RiderPopUp
-                riderName={order.riderName}
-                riderProfilePic={order.riderProfilePic}
+                riderName={order?.riderName}
+                riderProfilePic={order?.riderProfilePic}
                 telRider={order?.telRider}
                 onChatClick={handleChatClick}
                 onClickChatAdmin={handleChatAdminClick}
@@ -342,8 +342,8 @@ function UserOrder() {
           isOpen={modalTelephone}
           onClose={() => handleModalTelClose(false)}
         >
-          <p>{`tel ${order?.telRider}`}</p>
-          <div className="flex w-full items-center justify-between">
+          <p className="text-white">{`tel ${order?.telRider}`}</p>
+          <div className="flex w-full items-center justify-between text-white">
             <CommonButton onClick={() => handleModalTelClose(true)}>
               Yes
             </CommonButton>

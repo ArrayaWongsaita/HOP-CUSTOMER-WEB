@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 
-const ModalCommon = ({ children, onClose, isOpen }) => {
+const ModalCommon = ({ children, isOpen }) => {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -11,7 +11,7 @@ const ModalCommon = ({ children, onClose, isOpen }) => {
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="bg-white p-4 rounded shadow-lg min-w-[300px] m-16 flex flex-col items-center justify-around min-h-[200px]"
+            className="bg-[#1d2b53] p-4 rounded shadow-lg min-w-[300px] m-16 flex flex-col items-center justify-around min-h-[200px]"
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
             exit={{ scale: 0.8 }}
