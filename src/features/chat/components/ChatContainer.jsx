@@ -34,12 +34,21 @@ export default function ChatContainer({
   const sendMessage = () => {
     if (message.trim() && !delaySendMessage) {
       console.log("send");
-      socket.emit("sendMessage", {
+      if(chatWith === "Rider"){
+        socket.emit("sendMessage", {
         chatId,
         senderId,
         content: message,
         senderRole: "USER",
-      });
+      })
+      ;}else {
+        socket.emit("sendMessageAdmin", {
+          chatId,
+          senderId,
+          content: message,
+          senderRole: "USER",
+        })
+      }
       setMessage("");
       delaySendMessage = true;
       setTimeout(() => {
@@ -53,12 +62,13 @@ export default function ChatContainer({
       <div className="w-full bg-gradient-to-r from-[#516293] to-[#1D2B53] h-[85%] border-4 rounded-2xl flex flex-col justify-between items-center">
         <div className="w-full h-1/6 flex justify-between">
           <div className="h-full mx-2 aspect-[6/7] flex justify-center items-center">
-            <div className="border-torchRed border-[3px] rounded-xl w-3/4 h-3/4">
-              image
+            <div className="border-torchRed border-[3px] rounded-xl w-3/4 h-3/4 overflow-hidden">
+              {chatWithInfo?   <img src={chatWithInfo?.profileImage} alt="" /> :null}
+            
             </div>
           </div>
           <div className="flex-1 flex justify-center py-5">
-            <h1 className="text-white text-3xl">{chatWithInfo? `${chatWithInfo.firstName} ${chatWithInfo.lastName}`  :null}</h1>
+            <h1 className="text-white text-3xl">{chatWithInfo? `${chatWithInfo.firstName} ${chatWithInfo.lastName}`  : "Admin"}</h1>
           </div>
           <div className="px-2 py-3 text-center">
             <h1

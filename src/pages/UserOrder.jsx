@@ -14,6 +14,7 @@ import ChatContainer from "../features/chat/components/ChatContainer";
 import ModalCommon from "../components/ModalCommon";
 import CommonButton from "../components/CommonButton";
 
+
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 let chatOpen = false;
 
@@ -25,6 +26,8 @@ function UserOrder() {
   const [riderInfo, setRiderInfo] = useState(null)
   const navigate = useNavigate(); // ใช้งาน useNavigate
 
+  const [chatAdminId, setChatAdminId] = useState(null);
+  const [messagesAdmin, setMessagesAdmin] = useState([]);
   const [chatId, setChatId] = useState(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -48,12 +51,12 @@ function UserOrder() {
       const handleRouteHistory = (data) => {
         console.log(data.status);
         if (data.status === "PENDING" && data?.chatInfo) {
-          console.log("bug----------!!!!!!!!!!!!!!!!!");
           return;
         }
-        if(data.riderInfo){
-          console.log("set rider info",data.riderInfo)
-          setRiderInfo(data.riderInfo)
+        console.log(data)
+        if(data.rider){
+          console.log("set rider info",data.rider)
+          setRiderInfo(data.rider)
         }
         if (data?.chatInfo) {
           console.log(
@@ -119,11 +122,14 @@ function UserOrder() {
         }
       };
 
+
       console.log("--------------------------joinChat", chatId);
       socket.emit("joinChat", { chatId });
       socket.on("chatHistory", handleChatHistory);
       socket.on("newMessage", handleNewMessage);
       socket.on("typing", handleTyping);
+
+
 
       return () => {
         socket.off("chatHistory", handleChatHistory);
@@ -133,12 +139,58 @@ function UserOrder() {
     }
   }, [chatId, socket]);
 
+  useEffect(()=>{
+    if(socket){
+        const handleChatAdminId = (data) =>{
+          setChatAdminId(data.id)
+          if(data?.messages){
+            setMessagesAdmin(data.messages);
+          }
+        }
+      socket.on("chatAdminInfo",handleChatAdminId)
+
+      if(chatAdminId){
+        const handleNewMessageAdmin = (message) => {
+          console.log("newMessageAdmin")
+          // if (!chatOpen) {
+          //   setIsModalChatOpen(true);
+          // }
+          setMessagesAdmin((messagesAdmin) =>
+            messagesAdmin.filter((item) => item.senderRole !== "TYPING")
+          );
+          setMessagesAdmin((messages) => [...messages, message]);
+        };
+
+
+        socket.on("newMessageAdmin", handleNewMessageAdmin);
+
+        
+        return () => {
+
+          socket.off("chatAdminId",handleChatAdminId)
+        }
+      }
+    }
+  },[socket , chatAdminId])
+
   const handleChatClick = () => {
     setIsChatOpen((isChatOpen) => !isChatOpen);
     chatOpen = true;
   };
   const handleChatClose = () => {
     setIsChatOpen(false);
+    chatOpen = false;
+  };
+
+  const handleChatAdminClick = () => {
+    if(!chatAdminId){
+      socket.emit("chatToAdmin")
+    }
+    setIsChatAdminOpen(true);
+    chatOpen = true;
+  };
+  const handleChatAdminClose = () => {
+    setIsChatAdminOpen(false);
     chatOpen = false;
   };
 
@@ -245,6 +297,9 @@ function UserOrder() {
         setIsThankYouModalOpen(false);
         socket.emit("leaveRoute", { routeId });
         socket.emit("leaveChat", { chatId });
+        if(chatAdminId){
+          socket.emit("leaveChat", { chatAdminId });
+        }
         navigate("/");
       }, 3000); //
     }
@@ -256,18 +311,11 @@ function UserOrder() {
   const handleModalTelClose = useCallback((confirmedTel) => {
     setModalTelephone(false);
     if (confirmedTel) {
-      window.location.href = "tel:+6601234567"; // หมายเลขโทรศัพท์ที่ต้องการโทรออก
+      window.location.href = "tel:"+riderInfo?.phone; // หมายเลขโทรศัพท์ที่ต้องการโทรออก
     }
   }, []);
 
-  const handleChatAdminClick = () => {
-    setIsChatAdminOpen(true);
-    chatOpen = true;
-  };
-  const handleChatAdminClose = () => {
-    setIsChatAdminOpen(false);
-    chatOpen = false;
-  };
+
   const handleButtonTelClick = useCallback(() => {
     setModalTelephone(true);
   }, []);
@@ -283,20 +331,21 @@ function UserOrder() {
         )}
         {isChatOpen && (
           <ChatContainer
+          chatWithInfo={riderInfo}
             messages={messages}
             socket={socket}
             chatId={chatId}
             closeChat={handleChatClose}
-            senderId={order.userId}
+            senderId={order.customerId}
           />
         )}
         {isChatAdminOpen && (
           <ChatContainer
-            messages={messages}
+            messages={messagesAdmin}
             socket={socket}
-            chatId={chatId}
+            chatId={chatAdminId}
             closeChat={handleChatAdminClose}
-            senderId={order.riderId}
+            senderId={order.customerId}
             chatWith="Admin"
           />
         )}
@@ -316,8 +365,7 @@ function UserOrder() {
             {order && (
               <RiderPopUp
                 riderName={order.riderName}
-                riderProfilePic={order.riderProfilePic}
-                telRider={order?.telRider}
+                riderProfilePic={riderInfo?.profileImage}
                 onChatClick={handleChatClick}
                 onClickChatAdmin={handleChatAdminClick}
                 onClickTelUser={handleButtonTelClick}
@@ -346,7 +394,7 @@ function UserOrder() {
           isOpen={modalTelephone}
           onClose={() => handleModalTelClose(false)}
         >
-          <p>{`tel ${order?.telRider}`}</p>
+          <p>{`tel ${riderInfo?.phone}`}</p>
           <div className="flex w-full items-center justify-between">
             <CommonButton onClick={() => handleModalTelClose(true)}>
               Yes

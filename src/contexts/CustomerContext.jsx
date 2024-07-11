@@ -14,10 +14,25 @@ export const CustomerContext = createContext();
 export default function CustomerContextProvider({ children }) {
   const [customerUser, setCustomerUser] = useState(null);
   const [isCustomerUserLoading, setIsCustomerUserLoading] = useState(true);
+  const [routeHistory , setRouteHistory] = useState([])
 
   useEffect(() => {
     customerLogin();
   }, []);
+  useEffect(()=>{
+    const getRouteHistory = async () => {
+      try {
+        if (getAccessToken()) {
+        const res = await customerApi.checkCustomerRouteHistory()
+        console.log(res.data)
+        setRouteHistory(res.data)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getRouteHistory()
+  },[])
 
   const customerLogin = async () => {
     try {
@@ -46,6 +61,7 @@ export default function CustomerContextProvider({ children }) {
   };
 
   const value = {
+    routeHistory,
     customerUser,
     isCustomerUserLoading,
     login,
