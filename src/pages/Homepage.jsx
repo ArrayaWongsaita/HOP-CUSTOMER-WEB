@@ -141,6 +141,7 @@ function Homepage() {
                 route={route}
               />
             )}
+            s
             {!showConfirmOrder && (
               <div ref={locationInputRef}>
                 <Modal inputVisible={inputVisible}>
