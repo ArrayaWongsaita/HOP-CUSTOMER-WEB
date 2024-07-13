@@ -3,9 +3,10 @@ import { LoadScript } from "@react-google-maps/api";
 import MapSection from "../components/MapSection";
 import LocationInput from "../components/LocationInput";
 import Modal from "../components/Modal";
-import ConfirmOrder from "../components/ConfirmOrder";
+
 import { reverseGeocode } from "../utils/geocodeUtils"; // Import ฟังก์ชันจาก geocodeUtils
 import { useRef } from "react";
+import ConfirmOrder from "../features/Order/components/ConfirmOrder";
 
 function Homepage() {
   const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;

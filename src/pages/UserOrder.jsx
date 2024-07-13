@@ -37,41 +37,42 @@ function UserOrder() {
   const [modalTelephone, setModalTelephone] = useState(false);
   const [isChatAdminOpen, setIsChatAdminOpen] = useState(false);
 
-  // if(socket){
-  //   if (order?.status !== "PENDING") {
-  //     if(!chatId || !order){
-  //       console.log("getChat and order----------------")
-  //       socket.emit("requestRouteHistory", { routeId });
-  //     }
-  //   }
-  // }
 
   useEffect(() => {
     if (socket) {
       const handleRouteHistory = (data) => {
-        console.log(data.status);
         if (data.status === "PENDING" && data?.chatInfo) {
           return;
         }
-        console.log(data)
         if(data.rider){
-          console.log("set rider info",data.rider)
           setRiderInfo(data.rider)
         }
         if (data?.chatInfo) {
-          console.log(
-            data.chatInfo,
-            "chat---------------------------------------"
-          );
           setChatId(data.chatInfo.id);
           socket.emit("joinChat", { chatId: data.chatInfo.id });
         }
-        if (data.status === "ACCEPTED") data.status = 1;
-        else if (data.status === "PICKINGUP") data.status = 2;
-        else if (data.status === "ARRIVED") data.status = 3;
-        else if (data.status === "PICKEDUP") data.status = 4;
-        else if (data.status === "DELIVERING") data.status = 5;
-        else if (data.status === "FINISHED") data.status = 6;
+        switch (data.status) {
+          case "ACCEPTED":
+            data.status = 1;
+            break;
+          case "PICKINGUP":
+            data.status = 2;
+            break;
+          case "ARRIVED":
+            data.status = 3;
+            break;
+          case "PICKEDUP":
+            data.status = 4;
+            break;
+          case "DELIVERING":
+            data.status = 5;
+            break;
+          case "FINISHED":
+            data.status = 6;
+            break;
+          default:
+            console.log("Unknown status");
+        }
         setNewOrder(data);
       };
 
@@ -121,16 +122,10 @@ function UserOrder() {
           }, 5000);
         }
       };
-
-
-      console.log("--------------------------joinChat", chatId);
       socket.emit("joinChat", { chatId });
       socket.on("chatHistory", handleChatHistory);
       socket.on("newMessage", handleNewMessage);
       socket.on("typing", handleTyping);
-
-
-
       return () => {
         socket.off("chatHistory", handleChatHistory);
         socket.off("newMessage", handleNewMessage);
@@ -151,22 +146,13 @@ function UserOrder() {
 
       if(chatAdminId){
         const handleNewMessageAdmin = (message) => {
-          console.log("newMessageAdmin")
-          // if (!chatOpen) {
-          //   setIsModalChatOpen(true);
-          // }
           setMessagesAdmin((messagesAdmin) =>
             messagesAdmin.filter((item) => item.senderRole !== "TYPING")
           );
           setMessagesAdmin((messages) => [...messages, message]);
         };
-
-
         socket.on("newMessageAdmin", handleNewMessageAdmin);
-
-        
         return () => {
-
           socket.off("chatAdminId",handleChatAdminId)
         }
       }
@@ -201,7 +187,6 @@ function UserOrder() {
       const isGoogleMapsLoaded = window.google && window.google.maps;
       if (isGoogleMapsLoaded) {
         if (order.status === 1 || order.status === 2) {
-          console.log("status1");
           calculateRoute(order.riderGPS, order.locationA);
         } else if (order.status >= 3) {
           calculateRoute(order.locationA, order.locationB);
@@ -211,8 +196,6 @@ function UserOrder() {
   }, [order]);
 
   const calculateRoute = (origin, destination) => {
-    console.log("origin", origin);
-    console.log("defaultLocation", destination);
     if (!window.google || !window.google.maps) {
       console.error("Google Maps JavaScript API is not loaded.");
       setTimeout(() => {
@@ -240,7 +223,6 @@ function UserOrder() {
           setRoute(result);
           logTravelTime(result);
         } else {
-          console.log(result);
           console.error(`Error fetching directions ${result}`);
         }
       }
