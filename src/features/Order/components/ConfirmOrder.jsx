@@ -1,13 +1,10 @@
-import { useEffect, useState, useContext, useRef } from "react";
-import CircleButton from "./CircleButton";
-// import { useNavigate } from "react-router-dom";
-import { IconArrowLeft } from "../icons/IconArrowLeft";
-import { CustomerContext } from "../contexts/CustomerContext"; // Import context
-import useSocket from "../hooks/socketIoHook";
+import { useEffect, useState, useContext,  } from "react";
+import CircleButton from "../../../components/CircleButton";
+import { IconArrowLeft } from "../../../icons/IconArrowLeft";
+import { CustomerContext } from "../../../contexts/CustomerContext"; // Import context
+import useSocket from "../../../hooks/socketIoHook";
 import { useNavigate } from "react-router-dom";
-// import socketIOClient from "socket.io-client";
 
-// const ENDPOINT = import.meta.env.VITE_API_URL;
 
 function ConfirmOrder({
   locationA,
@@ -16,8 +13,7 @@ function ConfirmOrder({
   distance,
   onBackButtonClick,
 }) {
-  // const socket = useRef();
-  // const navigate = useNavigate();
+
 
   const { socket, setNewOrder } = useSocket();
   const navigate = useNavigate(); // ใช้ useNavigate
@@ -82,11 +78,7 @@ function ConfirmOrder({
       durationInMinutes,
       fare,
     };
-    console.log(order);
-
-    console.log("Order:", order);
     socket.emit("newRoute", order);
-    // navigate("/route");
   };
 
   return (
