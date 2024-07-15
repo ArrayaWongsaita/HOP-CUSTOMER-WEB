@@ -247,7 +247,7 @@ function UserOrder() {
         setDurationNumber((prevDuration) =>
           prevDuration > 0 ? prevDuration - 1 : 0
         );
-      }, 2000);
+      }, 1000);
 
       return () => clearInterval(timer);
     }
