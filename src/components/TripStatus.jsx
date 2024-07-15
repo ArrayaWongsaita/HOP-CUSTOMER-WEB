@@ -13,7 +13,6 @@ const TripStatus = ({ svgContent, status, time }) => {
   const animationFrameId = useRef(null);
   const startTimeRef = useRef(null);
 
-
   useEffect(() => {
     if (animationFrameId.current) {
       cancelAnimationFrame(animationFrameId.current);
@@ -39,57 +38,68 @@ const TripStatus = ({ svgContent, status, time }) => {
     };
 
     const updatePositionAndColor = () => {
+      let newLeftPosition;
+      let newCircleColors;
+
       switch (status) {
         case 1:
-          setLeftPosition(positions[0]);
-          setCircleColors([
+          newLeftPosition = positions[0];
+          newCircleColors = [
             "bg-red-500 text-white",
             "bg-white text-red-500 border-2 border-red-500",
             "bg-white text-red-500 border-2 border-red-500",
             "bg-white text-red-500 border-2 border-red-500",
-          ]);
+          ];
           break;
         case 2:
           animateToPosition(positions[1]);
-          break;
+          return; // Skip the rest of the updates as animation handles it
         case 3:
-          setLeftPosition(positions[1]);
-          setCircleColors([
+          newLeftPosition = positions[1];
+          newCircleColors = [
             "bg-red-500 text-white",
             "bg-red-500 text-white",
             "bg-white text-red-500 border-2 border-red-500",
             "bg-white text-red-500 border-2 border-red-500",
-          ]);
+          ];
           break;
         case 4:
           animateToPosition(positions[2]);
-          setCircleColors([
+          newCircleColors = [
             "bg-red-500 text-white",
             "bg-red-500 text-white",
             "bg-white text-red-500 border-2 border-red-500",
             "bg-white text-red-500 border-2 border-red-500",
-          ]);
-          break;
+          ];
+          return; // Skip the rest of the updates as animation handles it
         case 5:
-          setLeftPosition(positions[2]);
-          setCircleColors([
+          newLeftPosition = positions[2];
+          newCircleColors = [
             "bg-red-500 text-white",
             "bg-red-500 text-white",
             "bg-red-500 text-white",
             "bg-white text-red-500 border-2 border-red-500",
-          ]);
+          ];
           break;
         case 6:
-          setLeftPosition(positions[3]);
-          setCircleColors([
+          newLeftPosition = positions[3];
+          newCircleColors = [
             "bg-red-500 text-white",
             "bg-red-500 text-white",
             "bg-red-500 text-white",
             "bg-red-500 text-white",
-          ]);
+          ];
           break;
         default:
-          break;
+          return; // No action needed for other statuses
+      }
+
+      // Update state only if it is different
+      if (leftPosition !== newLeftPosition) {
+        setLeftPosition(newLeftPosition);
+      }
+      if (JSON.stringify(circleColors) !== JSON.stringify(newCircleColors)) {
+        setCircleColors(newCircleColors);
       }
     };
 
@@ -100,7 +110,7 @@ const TripStatus = ({ svgContent, status, time }) => {
         cancelAnimationFrame(animationFrameId.current);
       }
     };
-  }, [status, time, positions]);
+  }, [status, time]);
 
   const statuses = [
     { id: 1, name: "Start" },
