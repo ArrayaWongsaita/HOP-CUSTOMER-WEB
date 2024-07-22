@@ -1,10 +1,9 @@
-import { useEffect, useState, useContext,  } from "react";
+import { useEffect, useState, useContext } from "react";
 import CircleButton from "../../../components/CircleButton";
 import { IconArrowLeft } from "../../../icons/IconArrowLeft";
 import { CustomerContext } from "../../../contexts/CustomerContext"; // Import context
 import useSocket from "../../../hooks/socketIoHook";
 import { useNavigate } from "react-router-dom";
-
 
 function ConfirmOrder({
   locationA,
@@ -13,8 +12,6 @@ function ConfirmOrder({
   distance,
   onBackButtonClick,
 }) {
-
-
   const { socket, setNewOrder } = useSocket();
   const navigate = useNavigate(); // ใช้ useNavigate
   const [durationInMinutes, setDurationInMinutes] = useState(0);
@@ -103,14 +100,23 @@ function ConfirmOrder({
         <div className="relative rounded-t-lg w-[387px] h-[250px] bg-white flex items-start mt-[50px]">
           <div className="text-left flex flex-grow p-4 mt-[20px] w-[185px]">
             <div className="flex flex-col items-center justify-center w-full">
-              <div className="self-end w-full text-right text-[24px] mb-[-10px] text-[#FF004D]">
+              <div className="self-end w-full text-left text-[24px] mb-[-10px] text-[#FF004D]">
                 Est
               </div>
-              <div className="self-center w-full text-center text-[60px] text-[#FF004D]">
-                {durationInMinutes}
+              <div className="self-center w-full text-center text-[38px] text-[#FF004D] flex items-end justify-center">
+                <div className="flex-1 text-right font-bold">
+                  {durationInMinutes}
+                </div>
+                <div className=" text-left text-[15px]">min</div>
               </div>
-              <div className="self-start w-full text-left text-[24px] mt-[-10px] text-[#FF004D]">
-                Time (min)
+
+              <div className="self-center w-full text-center text-[38px] text-[#FF004D] flex items-end justify-center">
+                <div className="flex-1 text-right font-bold ">
+                  {distanceInKm}
+                </div>
+                <div className="text-left text-[15px]">
+                  km<span className="text-[12px] invisible">-</span>
+                </div>
               </div>
             </div>
           </div>
@@ -123,10 +129,12 @@ function ConfirmOrder({
                 Fee
               </div>
               <div className="self-center w-full text-center text-[60px] text-[#FF004D] ">
-                {distanceInKm}
+                {/* {distanceInKm} */}
+                {+distanceInKm * 10}
               </div>
               <div className="self-end w-full text-right text-[24px] mt-[-10px] text-[#FF004D]">
-                Distance (km)
+                {/* Distance (km) */}
+                THB
               </div>
             </div>
           </div>
